@@ -12,9 +12,9 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
-        stage('10-programming-fundamentals-java') {
+        stage('DigiBooky') {
             steps {
-                sh 'cd 10-programming-fundamentals-java && mvn -Dmaven.test.failure.ignore=true test'
+                sh 'mvn -Dmaven.test.failure.ignore=true test'
             }
         }
     }
