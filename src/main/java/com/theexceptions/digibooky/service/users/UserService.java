@@ -8,6 +8,8 @@ import com.theexceptions.digibooky.repository.users.Member;
 import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -31,5 +33,9 @@ public class UserService {
         Member userToAdd = new Member(createMemberDTO.getEmail(), createMemberDTO.getPassword(), createMemberDTO.getFirstName(), createMemberDTO.getLastName(), createMemberDTO.getSSID(), createMemberDTO.getAddress());
         userRepository.addUser(userToAdd);
         return userMapper.toUserDTO(userToAdd);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return userMapper.getUserDTOList(userRepository.getUsers().values());
     }
 }
