@@ -3,6 +3,7 @@ package com.theexceptions.digibooky.service.users;
 import com.theexceptions.digibooky.exceptions.FieldIsEmptyException;
 import com.theexceptions.digibooky.exceptions.MemberAlreadyExistsException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
+import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.Member;
 import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public void createNewMember(CreateMemberDTO createMemberDTO) {
+    public UserDTO createNewMember(CreateMemberDTO createMemberDTO) {
         if (createMemberDTO.getSSID() == null || createMemberDTO.getSSID().equals("")) {
             throw new FieldIsEmptyException("the SSID field cannot be empty");
         }
@@ -29,5 +30,6 @@ public class UserService {
         }
         Member userToAdd = new Member(createMemberDTO.getEmail(), createMemberDTO.getPassword(), createMemberDTO.getFirstName(), createMemberDTO.getLastName(), createMemberDTO.getSSID(), createMemberDTO.getAddress());
         userRepository.addUser(userToAdd);
+        return userMapper.toUserDTO(userToAdd);
     }
 }

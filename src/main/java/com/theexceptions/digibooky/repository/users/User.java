@@ -36,6 +36,10 @@ public class User {
         return email;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     private String validateEmail(String email) {
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
