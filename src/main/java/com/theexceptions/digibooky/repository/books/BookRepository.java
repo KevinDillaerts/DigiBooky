@@ -23,5 +23,10 @@ public class BookRepository {
         return books.values().stream().toList();
     }
 
+    // In functie van test
+    public void addBook(Book book) {
+        books.put(book.getIsbn(), book);
+    }
+
 
 }
