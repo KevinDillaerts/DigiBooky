@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -12,6 +13,8 @@ public class UserRepository {
 
     public UserRepository() {
         users = new HashMap<>();
+        // harcoded admin
+        users.put("0", new User("admin@digibooky.com", "admin","admin","admin",Role.ADMIN));
     }
 
     public Map<String, User> getUsers() {
@@ -31,5 +34,9 @@ public class UserRepository {
             return member.getSSID().equalsIgnoreCase(ssid);
         }
         return false;
+    }
+
+    public Optional<User> getUser(String email) {
+        return users.values().stream().filter(user -> user.getEmail().equals(email)).findFirst();
     }
 }
