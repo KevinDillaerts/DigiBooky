@@ -16,4 +16,28 @@ public class Book {
         this.authorLastName = authorLastName;
         isLentOut = false;
     }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSmallSummary() {
+        return smallSummary;
+    }
+
+    public String getAuthorFirstName() {
+        return authorFirstName;
+    }
+
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
+
+    public boolean isLentOut() {
+        return isLentOut;
+    }
 }

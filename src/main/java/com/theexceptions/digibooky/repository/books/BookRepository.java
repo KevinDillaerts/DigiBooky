@@ -3,7 +3,9 @@ package com.theexceptions.digibooky.repository.books;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class BookRepository {
@@ -12,4 +14,14 @@ public class BookRepository {
     public BookRepository() {
         books = new HashMap<>();
     }
+
+//    public Optional<Book> findByISBN(String isbn){
+//        return Optional.ofNullable(books.get(isbn));
+//    }
+
+    public List<Book> findAllBooks(){
+        return books.values().stream().toList();
+    }
+
+
 }
