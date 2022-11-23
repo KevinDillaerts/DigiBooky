@@ -1,5 +1,6 @@
 package com.theexceptions.digibooky.service.books;
 
+import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.repository.books.BookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ public class BookService {
 
     public List<BookDTO> findAllBooks(){
         return bookMapper.toDTO(bookRepository.findAllBooks());
+    }
+
+    public BookDTO findBookByISBN(String isbn){
+        return bookMapper.toDTO(bookRepository.findByISBN(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found.")));
     }
 
 }

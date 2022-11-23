@@ -15,9 +15,9 @@ public class BookRepository {
         books = new HashMap<>();
     }
 
-//    public Optional<Book> findByISBN(String isbn){
-//        return Optional.ofNullable(books.get(isbn));
-//    }
+    public Optional<Book> findByISBN(String isbn){
+        return Optional.ofNullable(books.get(isbn));
+    }
 
     public List<Book> findAllBooks(){
         return books.values().stream().toList();
