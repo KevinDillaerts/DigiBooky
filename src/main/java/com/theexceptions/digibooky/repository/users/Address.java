@@ -13,4 +13,7 @@ public class Address {
         this.city = city;
     }
 
+    public String getCity() {
+        return city;
+    }
 }

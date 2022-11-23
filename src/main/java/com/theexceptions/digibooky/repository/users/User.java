@@ -1,5 +1,8 @@
 package com.theexceptions.digibooky.repository.users;
 
+import com.theexceptions.digibooky.exceptions.EmailNotValidException;
+import com.theexceptions.digibooky.exceptions.FieldIsEmptyException;
+
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,15 +21,26 @@ public class User {
         this.email = validateEmail(email);
         this.password = password;
         this.firstName = firstName;
+        if (lastName == null || lastName.equals("")) {
+            throw new FieldIsEmptyException("Last name field cannot be empty");
+        }
         this.lastName = lastName;
         this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     private String validateEmail(String email) {
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) {
-            //TODO: throw error
+            throw new EmailNotValidException("This email format is not valid");
         }
         return email;
     }
