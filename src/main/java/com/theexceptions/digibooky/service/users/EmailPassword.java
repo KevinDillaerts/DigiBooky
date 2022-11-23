@@ -1,4 +1,4 @@
-package com.theexceptions.digibooky.service;
+package com.theexceptions.digibooky.service.users;
 
 
 public class EmailPassword {
