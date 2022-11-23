@@ -39,4 +39,11 @@ class BookRepositoryTest {
         Assertions.assertEquals(expectedList, testBookRepository.findAllBooks());
     }
 
+    @Test
+    void whenSearchingBookByISBN_returnCorrectBook(){
+        Book expectedBook = book1;
+
+        Assertions.assertEquals(expectedBook, testBookRepository.findByISBN("1").get());
+    }
+
 }
