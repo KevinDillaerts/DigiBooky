@@ -1,8 +1,6 @@
 package com.theexceptions.digibooky.service;
 
 
-import com.theexceptions.digibooky.exceptions.UserNotFoundException;
-import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +19,7 @@ public class SecurityService {
     }
 
     public void validateAuthorization(String authorization) {
-        EmailPassword usernamePassword = getUsernamePassword(authorization);
+        //   EmailPassword usernamePassword = getUsernamePassword(authorization);
 //        User user = userRepository.getUser(usernamePassword.getEmail()).orElseThrow(new UserNotFoundException("User not found")));
 //        if(user == null) {
 //            logger.error("Unknown user" + usernamePassword.getUsername());
@@ -38,10 +36,10 @@ public class SecurityService {
 
     }
 
-    private EmailPassword getUsernamePassword(String authorization) {
+/*    private EmailPassword getUsernamePassword(String authorization) {
         String decodedUsernameAndPassword = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
         String username = decodedUsernameAndPassword.substring(0, decodedUsernameAndPassword.indexOf(":"));
         String password = decodedUsernameAndPassword.substring(decodedUsernameAndPassword.indexOf(":") + 1);
         return new EmailPassword(username, password);
-    }
+    }*/
 }
