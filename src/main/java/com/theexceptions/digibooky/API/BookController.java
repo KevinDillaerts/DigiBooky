@@ -33,8 +33,11 @@ public class BookController {
         this.securityService = securityService;
     }
 
-    @GetMapping(produces = "application/json")
-    public List<BookDTO> getAllBooks() {
+//    params = {"isbn", "title", "authorFirstName", "authorLastName"}
+
+    @GetMapping(produces = "application/json", params = "isbn")
+    public List<BookDTO> getAllBooks(@RequestParam(required = false) String isbn) {
+        if (isbn != null) return bookservice.findBooksBySearchTerm(isbn);
         return bookservice.findAllBooks();
     }
 
@@ -71,6 +74,7 @@ public class BookController {
     @ExceptionHandler(UnauthorizatedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
+        logger.info(ex.getMessage());
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
 }

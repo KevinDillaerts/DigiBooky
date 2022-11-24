@@ -9,8 +9,6 @@ import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
-import com.theexceptions.digibooky.repository.users.User;
-import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,11 +28,11 @@ public class BookService {
 
     }
 
-    public List<BookDTO> findAllBooks(){
+    public List<BookDTO> findAllBooks() {
         return bookMapper.toDTO(bookRepository.findAllBooks());
     }
 
-    public BookDTO findBookByISBN(String isbn){
+    public BookDTO findBookByISBN(String isbn) {
         return bookMapper.toDTO(bookRepository.findByISBN(isbn)
                 .orElseThrow(() -> new BookNotFoundException("Book not found.")));
     }
@@ -49,7 +47,7 @@ public class BookService {
     }
 
     public BookDTO createBook(CreateBookDTO bookToCreate) {
-        if(bookRepository.findAllBooks().stream().anyMatch(book -> book.getIsbn().equals(bookToCreate.getIsbn()))) {
+        if (bookRepository.findAllBooks().stream().anyMatch(book -> book.getIsbn().equals(bookToCreate.getIsbn()))) {
             throw new BookAlreadyExistsException("Book already exists");
         }
         Book bookToAdd = new Book(bookToCreate.getIsbn(), bookToCreate.getTitle(), bookToCreate.getSmallSummary(), bookToCreate.getAuthorFirstName(), bookToCreate.getAuthorLastName());
@@ -57,10 +55,14 @@ public class BookService {
         return bookMapper.toDTO(bookToAdd);
     }
 
-    public void createLendBook(String isbn, String id){
+    public void createLendBook(String isbn, String id) {
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
         LentBook newLentBookEntry = new LentBook(isbn, id);
         lentBookRepository.addLentBook(newLentBookEntry);
+    }
+
+    public List<BookDTO> findBooksBySearchTerm(String isbn) {
+        return findAllBooks().stream().filter(book -> book.getIsbn().contains(isbn)).toList();
     }
 }

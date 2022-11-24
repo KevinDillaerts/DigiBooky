@@ -12,19 +12,15 @@ public class BookRepository {
     private final Map<String, Book> books;
 
     public BookRepository() {
-      books = new HashMap<>();
-      books.put("1", new Book("1", "title", "summary", "Jonas", "Nata"));
+        books = new HashMap<>();
     }
 
 
-
-
-
-    public Optional<Book> findByISBN(String isbn){
+    public Optional<Book> findByISBN(String isbn) {
         return Optional.ofNullable(books.get(isbn));
     }
 
-    public List<Book> findAllBooks(){
+    public List<Book> findAllBooks() {
         return books.values().stream().toList();
     }
 
@@ -32,10 +28,6 @@ public class BookRepository {
     public void addBook(Book book) {
         books.put(book.getIsbn(), book);
     }
-
-
-
-
 
 
 }

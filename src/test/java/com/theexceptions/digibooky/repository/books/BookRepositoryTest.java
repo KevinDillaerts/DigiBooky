@@ -1,9 +1,9 @@
 package com.theexceptions.digibooky.repository.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
+import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
-import com.theexceptions.digibooky.repository.users.UserRepository;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class BookRepositoryTest {
@@ -26,9 +27,9 @@ class BookRepositoryTest {
 
     @BeforeEach
     void setupBookRepository() {
-        book1 = new Book("1", "The DiscWorld",
+        book1 = new Book("123456", "The DiscWorld",
                 "All about wizzzzzards!", "Terry", "Pratchett");
-        book2 = new Book("2", "Good Omens",
+        book2 = new Book("289456", "Good Omens",
                 "All about gods.", "Neill", "Gaimon");
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
@@ -50,7 +51,7 @@ class BookRepositoryTest {
     void whenSearchingBookByISBN_returnCorrectBook() {
         Book expectedBook = book1;
 
-        Assertions.assertEquals(expectedBook, testBookRepository.findByISBN("1").get());
+        Assertions.assertEquals(expectedBook, testBookRepository.findByISBN("123456").get());
     }
 
     @Test
@@ -68,9 +69,29 @@ class BookRepositoryTest {
 
     @Test
     void givenANewBook_whenISBNAlreadyExists_throwBookAlreadyExistsException() {
-        CreateBookDTO bookDTO = new CreateBookDTO("1", "The DiscWorld",
+        CreateBookDTO bookDTO = new CreateBookDTO("123456", "The DiscWorld",
                 "All about wizzzzzards!", "Terry", "Pratchett");
         Assertions.assertThrows(BookAlreadyExistsException.class, () -> testBookService.createBook(bookDTO));
     }
 
+    @Test
+    void givenAListOfBooks_whenSearchingByISBN_thenReturnCorrectBooks() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+        expectedList.add(mapper.toDTO(book2));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerm("456");
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByISBNAgain_thenReturnCorrectBook() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerm("12");
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
 }
