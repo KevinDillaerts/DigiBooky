@@ -21,8 +21,15 @@ class UserControllerTest {
 
     @Test
     void createMember_givenMemberData_thenTheNewlyCreatedMemberisSavedAndReturned() {
-        CreateMemberDTO createMemberDTO = new CreateMemberDTO("raf@raf.be", "abc123","Raf", "Abbeel","1111",
-                new Address("Kouterbaan","22A","9280","Lesbeke"));
+        CreateMemberDTO createMemberDTO = new CreateMemberDTO("raf@raf.be",
+                "abc123",
+                "Raf",
+                "Abbeel",
+                "1111",
+                new Address("Kouterbaan",
+                        "22A",
+                        "9280",
+                        "Lebbeke"));
 
         UserDTO userDTO =
                 RestAssured
@@ -43,5 +50,7 @@ class UserControllerTest {
         assertThat(userDTO.getEmail()).isEqualTo(createMemberDTO.getEmail());
         assertThat(userDTO.getRole()).isEqualTo(Role.MEMBER);
     }
+
+
 
 }

@@ -2,6 +2,8 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
+import com.theexceptions.digibooky.repository.users.Role;
+import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.users.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,9 +15,11 @@ import java.util.List;
 @RequestMapping(path = "/users")
 public class UserController {
     private final UserService userService;
+    private final SecurityService securityService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SecurityService securityService) {
         this.userService = userService;
+        this.securityService = securityService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -26,7 +30,8 @@ public class UserController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers(@RequestHeader String authorization) {
+        securityService.validateAuthorization(authorization, Role.ADMIN);
         return userService.getAllUsers();
     }
 }
