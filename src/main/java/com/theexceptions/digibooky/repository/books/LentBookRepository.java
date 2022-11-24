@@ -1,5 +1,6 @@
 package com.theexceptions.digibooky.repository.books;
 
+import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +20,15 @@ public class LentBookRepository {
         lentBooks.add(lentBookToAdd);
     }
 
+    public LentBook getLentBookByLentBookId(String lentBookId){
+        return lentBooks.stream().filter(lentBook -> lentBook.getLentBookId().equals(lentBookId))
+                .findFirst().orElseThrow(() -> new BookNotFoundException("Book not found"));
+    }
+
+//    public void deleteReturnedBook(String lentBookId){
+//        for ()
+//        lentBooks.stream().filter(lentBook -> lentBook.getLentBookId().equals(lentBookId))
+//
+//    }
 
 }

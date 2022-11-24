@@ -64,6 +64,4 @@ public class BookController {
         logger.info(ex.getMessage());
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
-
-
 }

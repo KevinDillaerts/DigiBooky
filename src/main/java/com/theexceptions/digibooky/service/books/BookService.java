@@ -2,7 +2,9 @@ package com.theexceptions.digibooky.service.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.repository.books.*;
+import com.theexceptions.digibooky.repository.books.Book;
+import com.theexceptions.digibooky.repository.books.BookRepository;
+import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
@@ -25,8 +27,6 @@ public class BookService {
         this.bookMapper = bookMapper;
         this.bookRepository = bookRepository;
         this.lentBookRepository = lentBookRepository;
-
-
     }
 
     public List<BookDTO> findAllBooks() {
