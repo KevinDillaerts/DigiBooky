@@ -1,2 +1,4 @@
-package com.theexceptions.digibooky.exceptions;public class WrongPasswordException {
+package com.theexceptions.digibooky.exceptions;
+
+public class WrongPasswordException extends RuntimeException {
 }

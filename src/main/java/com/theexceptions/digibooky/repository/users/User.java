@@ -48,4 +48,8 @@ public class User {
         }
         return email;
     }
+
+    public boolean doesPasswordMatch(String password) {
+        return password.equals(this.password);
+    }
 }
