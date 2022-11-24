@@ -20,11 +20,11 @@ public class BookRepository {
 
 
 
-    public Optional<Book> findByISBN(String isbn){
+    public Optional<Book> findByISBN(String isbn) {
         return Optional.ofNullable(books.get(isbn));
     }
 
-    public List<Book> findAllBooks(){
+    public List<Book> findAllBooks() {
         return books.values().stream().toList();
     }
 

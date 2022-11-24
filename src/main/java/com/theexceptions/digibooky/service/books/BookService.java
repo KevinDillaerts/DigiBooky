@@ -28,11 +28,11 @@ public class BookService {
         this.userRepository = userRepository;
     }
 
-    public List<BookDTO> findAllBooks(){
+    public List<BookDTO> findAllBooks() {
         return bookMapper.toDTO(bookRepository.findAllBooks());
     }
 
-    public BookDTO findBookByISBN(String isbn){
+    public BookDTO findBookByISBN(String isbn) {
         return bookMapper.toDTO(bookRepository.findByISBN(isbn)
                 .orElseThrow(() -> new BookNotFoundException("Book not found.")));
     }
