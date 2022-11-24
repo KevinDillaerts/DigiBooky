@@ -6,14 +6,17 @@ import java.util.List;
 @Repository
 public class LentBookRepository {
 
-    private List<Book> rentBooks;
+    private List<LentBook> lentBooks;
 
-    public LentBookRepository(List<Book> rentBooks) {
-        this.rentBooks = rentBooks;
+    public LentBookRepository(List<LentBook> rentBooks) {
+        this.lentBooks = lentBooks;
     }
 
-    public List<Book> getAllLendBooks(){
-        return rentBooks;
+    public List<LentBook> getAllLendBooks(){
+        return lentBooks;
+    }
+    public void addLentBook(LentBook lentBookToAdd){
+        lentBooks.add(lentBookToAdd);
     }
 
 
