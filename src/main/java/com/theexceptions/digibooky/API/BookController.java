@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
+import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,19 @@ public class BookController {
         return bookservice.findBookByISBN(isbn);
     }
 
+    @PutMapping(path = "{isbn}", consumes = "application/json", produces = "application/json")
+    public BookDTO updateBookByISBN(@PathVariable String isbn, @RequestBody UpdateBookDTO bookToUpdate) {
+        return bookservice.updateBook(isbn, bookToUpdate);
+    }
+
+
+
     @ExceptionHandler(BookNotFoundException.class)
     protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
         logger.info("Book not found.");
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
+
+
 
 }
