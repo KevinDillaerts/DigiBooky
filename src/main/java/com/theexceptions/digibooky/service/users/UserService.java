@@ -2,10 +2,12 @@ package com.theexceptions.digibooky.service.users;
 
 import com.theexceptions.digibooky.exceptions.FieldIsEmptyException;
 import com.theexceptions.digibooky.exceptions.MemberAlreadyExistsException;
+import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.Member;
+import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ public class UserService {
     public UserDTO createNewModerator(CreateModeratorDTO createModeratorDTO) {
         if (userRepository.containsEmail(createModeratorDTO.email())) {
             throw new MemberAlreadyExistsException("This user's email or ssid already exists");
+        }
+        if (createModeratorDTO.role().equals(Role.MEMBER)) {
+            throw new UnauthorizatedException(("You cannot create a new member"));
         }
         User userToAdd = new User(createModeratorDTO.email(), createModeratorDTO.password(),
                 createModeratorDTO.firstName(), createModeratorDTO.lastName(), createModeratorDTO.role());
