@@ -25,10 +25,10 @@ public class LentBookRepository {
                 .findFirst().orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 
-    public void deleteReturnedBook(String lentBookId){
-        for ()
-        lentBooks.stream().filter(lentBook -> lentBook.getLentBookId().equals(lentBookId))
-
-    }
+//    public void deleteReturnedBook(String lentBookId){
+//        for ()
+//        lentBooks.stream().filter(lentBook -> lentBook.getLentBookId().equals(lentBookId))
+//
+//    }
 
 }
