@@ -1,5 +1,7 @@
 package com.theexceptions.digibooky.repository.books;
 
+import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
+import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.repository.users.UserRepository;
 import com.theexceptions.digibooky.service.books.BookMapper;
@@ -45,7 +47,7 @@ class BookRepositoryTest {
     }
 
     @Test
-    void whenSearchingBookByISBN_returnCorrectBook(){
+    void whenSearchingBookByISBN_returnCorrectBook() {
         Book expectedBook = book1;
 
         Assertions.assertEquals(expectedBook, testBookRepository.findByISBN("1").get());
@@ -62,6 +64,13 @@ class BookRepositoryTest {
         expectedBook.setAuthorLastName("Jefferson");
 
         Assertions.assertEquals(mapper.toDTO(expectedBook), testBookService.updateBook(book1.getIsbn(), bookDTO));
+    }
+
+    @Test
+    void givenANewBook_whenISBNAlreadyExists_throwBookAlreadyExistsException() {
+        CreateBookDTO bookDTO = new CreateBookDTO("1", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Assertions.assertThrows(BookAlreadyExistsException.class, () -> testBookService.createBook(bookDTO));
     }
 
 }

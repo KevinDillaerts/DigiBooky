@@ -10,7 +10,7 @@ import java.util.List;
 public class BookMapper {
     public BookDTO toDTO(Book book) {
         return new BookDTO(book.getIsbn(), book.getTitle(), book.getSmallSummary(), book.getAuthorFirstName(),
-                book.getAuthorLastName());
+                book.getAuthorLastName(), book.isLentOut());
     }
 
     public List<BookDTO> toDTO(List<Book> books) {
