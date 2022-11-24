@@ -8,7 +8,7 @@ public class LentBookRepository {
 
     private List<LentBook> lentBooks;
 
-    public LentBookRepository(List<LentBook> rentBooks) {
+    public LentBookRepository(List<LentBook> lentBooks) {
         this.lentBooks = lentBooks;
     }
 

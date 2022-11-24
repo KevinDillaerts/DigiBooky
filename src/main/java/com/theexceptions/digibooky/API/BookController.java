@@ -2,7 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
@@ -58,17 +58,11 @@ public class BookController {
         return bookservice.createBook(bookToCreate);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/lend", consumes = "application/json")
-    public void lendBook(@RequestHeader String authorization, @RequestBody String isbn) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void lendBook(@RequestHeader String authorization, @RequestBody LendBookIdDTO lendBookIdDTO) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        bookservice.createLendBook(isbn, user.getId());
-    }
-
-    @ExceptionHandler({BookNotFoundException.class, BookAlreadyExistsException.class})
-    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info(ex.getMessage());
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        bookservice.createLendBook(lendBookIdDTO.id(), user.getId());
     }
 
     @ExceptionHandler(UnauthorizatedException.class)
@@ -77,4 +71,6 @@ public class BookController {
         logger.info(ex.getMessage());
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
+
+
 }

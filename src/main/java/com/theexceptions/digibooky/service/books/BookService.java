@@ -2,10 +2,7 @@ package com.theexceptions.digibooky.service.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.repository.books.Book;
-import com.theexceptions.digibooky.repository.books.BookRepository;
-import com.theexceptions.digibooky.repository.books.LentBook;
-import com.theexceptions.digibooky.repository.books.LentBookRepository;
+import com.theexceptions.digibooky.repository.books.*;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
@@ -57,8 +54,10 @@ public class BookService {
 
     public void createLendBook(String isbn, String id) {
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
+    public void createLendBook(String lendBookId, String userId){
+        Book lentBook = bookRepository.findByISBN(lendBookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
-        LentBook newLentBookEntry = new LentBook(isbn, id);
+        LentBook newLentBookEntry = new LentBook(lendBookId, userId);
         lentBookRepository.addLentBook(newLentBookEntry);
     }
 
