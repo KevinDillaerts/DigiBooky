@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -32,10 +33,12 @@ public class BookController {
 
 //    params = {"isbn", "title", "authorFirstName", "authorLastName"}
 
-    @GetMapping(produces = "application/json", params = "isbn")
-    public List<BookDTO> getAllBooks(@RequestParam(required = false) String isbn) {
-        if (isbn != null) return bookservice.findBooksBySearchTerm(isbn);
-        return bookservice.findAllBooks();
+    @GetMapping(produces = "application/json")
+    public List<BookDTO> getAllBooks(@RequestParam(required = false) Map<String, String> params) {
+        if (!params.isEmpty()) {
+            return bookservice.findBooksBySearchTerms(params);
+        }
+       return bookservice.findAllBooks();
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")

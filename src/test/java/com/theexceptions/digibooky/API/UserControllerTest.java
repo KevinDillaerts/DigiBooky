@@ -26,7 +26,7 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     @Test
-    void createMember_givenMemberData_thenTheNewlyCreatedMemberisSavedAndReturned() {
+    void createMember_givenMemberData_thenTheNewlyCreatedMemberIsSavedAndReturned() {
         CreateMemberDTO createMemberDTO = new CreateMemberDTO("kevin@test.be", "paswoord", "Kevin", "Bacon", "2505050",
                 new Address("Koekoeksstraat", "70", "9090", "Melle"));
 

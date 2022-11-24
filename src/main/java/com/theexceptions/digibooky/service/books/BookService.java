@@ -9,6 +9,10 @@ import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+
 
 @Service
 public class BookService {
@@ -52,7 +56,25 @@ public class BookService {
         return bookMapper.toDTO(bookToAdd);
     }
 
-    public List<BookDTO> findBooksBySearchTerm(String isbn) {
-        return findAllBooks().stream().filter(book -> book.getIsbn().contains(isbn)).toList();
+    public List<BookDTO> findBooksBySearchTerms(Map<String, String> params) {
+        List<Book> books = bookRepository.findAllBooks();
+        for (Map.Entry<String, String> entry: params.entrySet()) {
+            books = filterBooks(entry, books);
+        }
+        return bookMapper.toDTO(books);
+    }
+
+    public List<Book> filterBooks(Map.Entry<String, String> entry, List<Book> books) {
+        return switch (entry.getKey()) {
+            case "isbn" ->
+                    books.stream().filter(book -> book.getIsbn().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
+            case "title" ->
+                    books.stream().filter(book -> book.getTitle().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
+            case "authorFirstName" ->
+                    books.stream().filter(book -> book.getAuthorFirstName().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
+            case "authorLastName" ->
+                    books.stream().filter(book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
+            default -> books;
+        };
     }
 }
