@@ -15,8 +15,6 @@ public class UserRepository {
         users = new HashMap<>();
         // harcoded admin
         users.put("0", new User("admin@digibooky.com", "admin", "admin", "admin", Role.ADMIN));
-        users.put("1", new Member("kevin@kevin.be", "kevin", "Kevin", "Dillaerts", "1235",
-                new Address("Albertvest", "6", "3300", "Tienen")));
     }
 
     public Map<String, User> getUsers() {

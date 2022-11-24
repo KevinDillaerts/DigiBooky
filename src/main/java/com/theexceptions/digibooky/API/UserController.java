@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
+import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.service.SecurityService;
@@ -31,6 +32,13 @@ public class UserController {
         return userService.createNewMember(createMemberDTO);
     }
 
+    @PostMapping(path = "/admin", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO createModerator(@RequestHeader String authorization, @RequestBody CreateModeratorDTO createModeratorDTO) {
+        securityService.validateAuthorization(authorization, Role.ADMIN);
+        return userService.createNewModerator(createModeratorDTO);
+    }
+
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers(@RequestHeader String authorization) {
@@ -39,7 +47,8 @@ public class UserController {
     }
 
     @ExceptionHandler(UnauthorizatedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
 }

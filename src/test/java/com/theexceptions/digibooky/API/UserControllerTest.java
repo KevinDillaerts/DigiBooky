@@ -1,12 +1,16 @@
 package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
+import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.Address;
+import com.theexceptions.digibooky.repository.users.Member;
 import com.theexceptions.digibooky.repository.users.Role;
+import com.theexceptions.digibooky.repository.users.UserRepository;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,6 +24,9 @@ class UserControllerTest {
 
     @Value("8080")
     private int port;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void createMember_givenMemberData_thenTheNewlyCreatedMemberisSavedAndReturned() {
@@ -66,6 +73,9 @@ class UserControllerTest {
 
     @Test
     void givenMember_whenViewingAllUsers_thenErrorThrown() {
+        userRepository.addUser(new Member("kevin@kevin.be", "kevin", "Kevin", "Dillaerts", "1235",
+                new Address("Albertvest", "6", "3300", "Tienen")));
+
         RestAssured
                 .given()
                 .auth().preemptive().basic("kevin@kevin.be", "kevin")
@@ -75,6 +85,52 @@ class UserControllerTest {
                 .get("/users")
                 .then()
                 .assertThat()
-                .statusCode(HttpStatus.SC_UNAUTHORIZED);
+                .statusCode(HttpStatus.SC_FORBIDDEN);
+    }
+
+    @Test
+    void givenAdminUser_whenCreatingLibrarian_thenLibrarianIsCreated() {
+        CreateModeratorDTO createModeratorDTO = new CreateModeratorDTO("test@test.be", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN);
+
+        UserDTO librarian =
+                RestAssured
+                        .given()
+                        .contentType(JSON)
+                        .auth().preemptive().basic("admin@digibooky.com", "admin")
+                        .body(createModeratorDTO)
+                        .accept(JSON)
+                        .when()
+                        .port(port)
+                        .post("/users/admin")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.SC_CREATED)
+                        .extract()
+                        .as(UserDTO.class);
+
+        assertThat(librarian.getRole()).isEqualTo(Role.LIBRARIAN);
+        assertThat(librarian.getEmail()).isEqualTo(createModeratorDTO.email());
+        assertThat(librarian.getId()).isNotBlank();
+    }
+
+    @Test
+    void givenMember_whenCreatingLibrarian_thenErrorThrown() {
+        userRepository.addUser(new Member("kevin@kevin.be", "kevin", "Kevin", "Dillaerts", "1235",
+                new Address("Albertvest", "6", "3300", "Tienen")));
+
+        CreateModeratorDTO createModeratorDTO = new CreateModeratorDTO("test@test.be", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN);
+
+        RestAssured
+                .given()
+                .contentType(JSON)
+                .auth().preemptive().basic("kevin@kevin.be", "kevin")
+                .body(createModeratorDTO)
+                .accept(JSON)
+                .when()
+                .port(port)
+                .post("/users/admin")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
     }
 }

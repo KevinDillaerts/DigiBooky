@@ -23,12 +23,12 @@ public class SecurityService {
 
     public void validateAuthorization(String authorization, Role securityRole) {
         EmailPassword usernamePassword = getUsernamePassword(authorization);
-        User user = userRepository.getUser(usernamePassword.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        if (!user.doesPasswordMatch(usernamePassword.getPassword())) {
+        User user = userRepository.getUser(usernamePassword.email()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (!user.doesPasswordMatch(usernamePassword.password())) {
             throw new WrongPasswordException();
         }
         if (!user.getRole().equals(securityRole)) {
-            throw new UnauthorizatedException("YOu are not authorized to access this information");
+            throw new UnauthorizatedException("You are not authorized to access this information");
         }
 
     }
