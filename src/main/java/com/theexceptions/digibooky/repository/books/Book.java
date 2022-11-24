@@ -1,9 +1,13 @@
 package com.theexceptions.digibooky.repository.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyLentOutException;
+import com.theexceptions.digibooky.exceptions.FieldIsEmptyException;
+
+import javax.validation.constraints.NotNull;
 
 public class Book {
     private final String isbn;
+
     private String title;
     private String smallSummary;
     private String authorFirstName;
@@ -11,11 +15,11 @@ public class Book {
     private boolean isLentOut;
 
     public Book(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName) {
-        this.isbn = isbn;
-        this.title = title;
+        this.isbn = validateField(isbn);
+        this.title = validateField(title);
         this.smallSummary = smallSummary;
         this.authorFirstName = authorFirstName;
-        this.authorLastName = authorLastName;
+        this.authorLastName = validateField(authorLastName);
         isLentOut = false;
     }
 
@@ -65,6 +69,13 @@ public class Book {
             throw new BookAlreadyLentOutException("Book already lent out.");
         }
         isLentOut = true;
+    }
+
+    public String validateField(String field) {
+       if (field == null || field.isEmpty()) {
+           throw new FieldIsEmptyException("This field is required");
+       }
+       return field;
     }
 
 

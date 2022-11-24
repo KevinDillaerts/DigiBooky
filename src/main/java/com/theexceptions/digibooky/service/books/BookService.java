@@ -1,10 +1,12 @@
 package com.theexceptions.digibooky.service.books;
 
+import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
 import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
+import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.repository.users.UserRepository;
@@ -42,6 +44,15 @@ public class BookService {
         book.setAuthorLastName(bookToUpdate.getAuthorLastName());
         book.setSmallSummary(bookToUpdate.getSmallSummary());
         return bookMapper.toDTO(book);
+    }
+
+    public BookDTO createBook(CreateBookDTO bookToCreate) {
+        if(bookRepository.findAllBooks().stream().anyMatch(book -> book.getIsbn().equals(bookToCreate.getIsbn()))) {
+            throw new BookAlreadyExistsException("Book already exists");
+        }
+        Book bookToAdd = new Book(bookToCreate.getIsbn(), bookToCreate.getTitle(), bookToCreate.getSmallSummary(), bookToCreate.getAuthorFirstName(), bookToCreate.getAuthorLastName());
+        bookRepository.addBook(bookToAdd);
+        return bookMapper.toDTO(bookToAdd);
     }
 
     public void createLendBook(String isbn, String id){
