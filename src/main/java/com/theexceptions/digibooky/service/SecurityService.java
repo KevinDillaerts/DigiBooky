@@ -4,6 +4,7 @@ package com.theexceptions.digibooky.service;
 import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.repository.users.UserRepository;
+import com.theexceptions.digibooky.service.users.EmailPassword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class SecurityService {
     }
 
     public void validateAuthorization(String authorization) {
-        EmailPassword usernamePassword = getUsernamePassword(authorization);
+//        EmailPassword usernamePassword = getUsernamePassword(authorization);
 //        User user = userRepository.getUser(usernamePassword.getEmail()).orElseThrow(new UserNotFoundException("User not found")));
 //        if(user == null) {
 //            logger.error("Unknown user" + usernamePassword.getUsername());

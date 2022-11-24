@@ -2,10 +2,10 @@ package com.theexceptions.digibooky.repository.books;
 
 public class Book {
     private final String isbn;
-    private final String title;
-    private final String smallSummary;
-    private final String authorFirstName;
-    private final String authorLastName;
+    private String title;
+    private String smallSummary;
+    private String authorFirstName;
+    private String authorLastName;
     private boolean isLentOut;
 
     public Book(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName) {
@@ -16,6 +16,7 @@ public class Book {
         this.authorLastName = authorLastName;
         isLentOut = false;
     }
+
 
     public String getIsbn() {
         return isbn;
@@ -40,4 +41,23 @@ public class Book {
     public boolean isLentOut() {
         return isLentOut;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setSmallSummary(String smallSummary) {
+        this.smallSummary = smallSummary;
+    }
+
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
+    }
+
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
+
+
+
 }

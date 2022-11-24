@@ -1,5 +1,8 @@
 package com.theexceptions.digibooky.repository.books;
 
+import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
+import com.theexceptions.digibooky.service.books.BookMapper;
+import com.theexceptions.digibooky.service.books.BookService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class BookRepositoryTest {
     @Autowired
     private BookRepository testBookRepository;
+    private BookService testBookService;
     private Book book1;
     private Book book2;
+    private BookMapper mapper;
 
     @BeforeEach
     void setupBookRepository() {
@@ -23,8 +28,9 @@ class BookRepositoryTest {
                 "All about wizzzzzards!", "Terry", "Pratchett");
         book2 = new Book("2", "Good Omens",
                 "All about gods.", "Neill", "Gaimon");
-
+        mapper = new BookMapper();
         testBookRepository = new BookRepository();
+        testBookService = new BookService(mapper, testBookRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }
@@ -34,7 +40,6 @@ class BookRepositoryTest {
         //        given
 
         List<Book> expectedList = List.of(book1, book2);
-//        BookRepository testBookRepository = new BookRepository;
 
         Assertions.assertEquals(expectedList, testBookRepository.findAllBooks());
     }
@@ -44,6 +49,19 @@ class BookRepositoryTest {
         Book expectedBook = book1;
 
         Assertions.assertEquals(expectedBook, testBookRepository.findByISBN("1").get());
+    }
+
+    @Test
+    void whenUpdatingBookByISBN_bookIsCorrectlyUpdated() {
+
+        UpdateBookDTO bookDTO = new UpdateBookDTO("title1", "blablabla", "Jef", "Jefferson");
+        Book expectedBook = book1;
+        expectedBook.setTitle("title1");
+        expectedBook.setSmallSummary("blablabla");
+        expectedBook.setAuthorFirstName("Jef");
+        expectedBook.setAuthorLastName("Jefferson");
+
+        Assertions.assertEquals(mapper.toDTO(expectedBook), testBookService.updateBook(book1.getIsbn(), bookDTO));
     }
 
 }
