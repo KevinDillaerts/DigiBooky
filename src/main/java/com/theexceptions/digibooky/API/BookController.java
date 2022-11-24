@@ -1,5 +1,6 @@
 package com.theexceptions.digibooky.API;
 
+import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
