@@ -1,13 +1,10 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
-import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
+import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.repository.users.Role;
-import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.slf4j.Logger;
@@ -56,13 +53,6 @@ public class BookController {
     public BookDTO createBook(@RequestBody CreateBookDTO bookToCreate, @RequestHeader String authorization) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.createBook(bookToCreate);
-    }
-
-    @PostMapping(path = "/lend", consumes = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void lendBook(@RequestHeader String authorization, @RequestBody LendBookIdDTO lendBookIdDTO) {
-        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        bookservice.createLendBook(lendBookIdDTO.id(), user.getId());
     }
 
     @ExceptionHandler(UnauthorizatedException.class)

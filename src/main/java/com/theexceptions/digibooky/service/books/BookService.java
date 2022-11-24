@@ -52,15 +52,6 @@ public class BookService {
         return bookMapper.toDTO(bookToAdd);
     }
 
-    public void createLendBook(String isbn, String id) {
-        Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
-    public void createLendBook(String lendBookId, String userId){
-        Book lentBook = bookRepository.findByISBN(lendBookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
-        lentBook.setBookToLentOutIsTrue();
-        LentBook newLentBookEntry = new LentBook(lendBookId, userId);
-        lentBookRepository.addLentBook(newLentBookEntry);
-    }
-
     public List<BookDTO> findBooksBySearchTerm(String isbn) {
         return findAllBooks().stream().filter(book -> book.getIsbn().contains(isbn)).toList();
     }
