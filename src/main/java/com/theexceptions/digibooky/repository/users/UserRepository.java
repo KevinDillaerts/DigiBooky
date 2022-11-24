@@ -26,14 +26,13 @@ public class UserRepository {
     }
 
     public boolean containsUser(String ssid, String email) {
-        if (users.values().stream().anyMatch(user -> user.getEmail().equalsIgnoreCase(email))) {
-            return true;
-        }
+        if (containsEmail(email)) return true;
         List<Member> members = users.values().stream().filter(user -> user instanceof Member).map(user -> (Member) user).toList();
-        for (Member member : members) {
-            return member.getSSID().equalsIgnoreCase(ssid);
-        }
-        return false;
+        return members.stream().anyMatch(member -> member.getSSID().equalsIgnoreCase(ssid));
+    }
+
+    public boolean containsEmail(String email) {
+        return users.values().stream().anyMatch(user -> user.getEmail().equalsIgnoreCase(email));
     }
 
     public Optional<User> getUser(String email) {

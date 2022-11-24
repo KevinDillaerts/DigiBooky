@@ -3,10 +3,7 @@ package com.theexceptions.digibooky.API;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
-import com.theexceptions.digibooky.repository.users.Address;
-import com.theexceptions.digibooky.repository.users.Member;
-import com.theexceptions.digibooky.repository.users.Role;
-import com.theexceptions.digibooky.repository.users.UserRepository;
+import com.theexceptions.digibooky.repository.users.*;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -30,8 +27,8 @@ class UserControllerTest {
 
     @Test
     void createMember_givenMemberData_thenTheNewlyCreatedMemberisSavedAndReturned() {
-        CreateMemberDTO createMemberDTO = new CreateMemberDTO("raf@raf.be", "abc123", "Raf", "Abbeel", "1111",
-                new Address("Kouterbaan", "22A", "9280", "Lesbeke"));
+        CreateMemberDTO createMemberDTO = new CreateMemberDTO("kevin@test.be", "paswoord", "Kevin", "Bacon", "2505050",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
 
         UserDTO userDTO =
                 RestAssured
@@ -73,12 +70,13 @@ class UserControllerTest {
 
     @Test
     void givenMember_whenViewingAllUsers_thenErrorThrown() {
-        userRepository.addUser(new Member("kevin@kevin.be", "kevin", "Kevin", "Dillaerts", "1235",
-                new Address("Albertvest", "6", "3300", "Tienen")));
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
 
         RestAssured
                 .given()
-                .auth().preemptive().basic("kevin@kevin.be", "kevin")
+                .auth().preemptive().basic(testUser.getEmail(), "test")
                 .accept(JSON)
                 .when()
                 .port(port)
@@ -115,15 +113,15 @@ class UserControllerTest {
 
     @Test
     void givenMember_whenCreatingLibrarian_thenErrorThrown() {
-        userRepository.addUser(new Member("kevin@kevin.be", "kevin", "Kevin", "Dillaerts", "1235",
-                new Address("Albertvest", "6", "3300", "Tienen")));
+        userRepository.addUser(new Member("kevin@digibooky.be", "kevin", "Kevin", "Digibooky", "1235555",
+                new Address("Koekoeksstraat", "70", "9090", "Melle")));
 
-        CreateModeratorDTO createModeratorDTO = new CreateModeratorDTO("test@test.be", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN);
+        CreateModeratorDTO createModeratorDTO = new CreateModeratorDTO("testing@test.be", "librarian", "John", "Travolta", Role.LIBRARIAN);
 
         RestAssured
                 .given()
                 .contentType(JSON)
-                .auth().preemptive().basic("kevin@kevin.be", "kevin")
+                .auth().preemptive().basic("kevin@digibooky.be", "kevin")
                 .body(createModeratorDTO)
                 .accept(JSON)
                 .when()

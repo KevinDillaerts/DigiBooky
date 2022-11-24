@@ -38,6 +38,9 @@ public class UserService {
     }
 
     public UserDTO createNewModerator(CreateModeratorDTO createModeratorDTO) {
+        if (userRepository.containsEmail(createModeratorDTO.email())) {
+            throw new MemberAlreadyExistsException("This user's email or ssid already exists");
+        }
         User userToAdd = new User(createModeratorDTO.email(), createModeratorDTO.password(),
                 createModeratorDTO.firstName(), createModeratorDTO.lastName(), createModeratorDTO.role());
         userRepository.addUser(userToAdd);
