@@ -40,11 +40,9 @@ class BookRepositoryTest {
 
     @Test
     void whenHavingARepositoryOfBooks_whenGettingALlBooks_returnListOfBooks() {
-        //        given
-
         List<Book> expectedList = List.of(book1, book2);
 
-        Assertions.assertEquals(expectedList, testBookRepository.findAllBooks());
+        Assertions.assertTrue(testBookRepository.findAllBooks().containsAll(expectedList));
     }
 
     @Test

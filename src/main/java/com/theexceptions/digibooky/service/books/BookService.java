@@ -2,13 +2,14 @@ package com.theexceptions.digibooky.service.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.repository.books.*;
+import com.theexceptions.digibooky.repository.books.Book;
+import com.theexceptions.digibooky.repository.books.BookRepository;
+import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -22,8 +23,6 @@ public class BookService {
         this.bookMapper = bookMapper;
         this.bookRepository = bookRepository;
         this.lentBookRepository = lentBookRepository;
-
-
     }
 
     public List<BookDTO> findAllBooks() {
@@ -45,7 +44,7 @@ public class BookService {
     }
 
     public BookDTO createBook(CreateBookDTO bookToCreate) {
-        if(bookRepository.findAllBooks().stream().anyMatch(book -> book.getIsbn().equals(bookToCreate.getIsbn()))) {
+        if (bookRepository.findAllBooks().stream().anyMatch(book -> book.getIsbn().equals(bookToCreate.getIsbn()))) {
             throw new BookAlreadyExistsException("Book already exists");
         }
         Book bookToAdd = new Book(bookToCreate.getIsbn(), bookToCreate.getTitle(), bookToCreate.getSmallSummary(), bookToCreate.getAuthorFirstName(), bookToCreate.getAuthorLastName());
@@ -53,22 +52,7 @@ public class BookService {
         return bookMapper.toDTO(bookToAdd);
     }
 
-    public void createLendBook(String isbn, String userId){
-        Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
-        lentBook.setBookToLentOutIsTrue();
-        LentBook newLentBookEntry = new LentBook(isbn, userId);
-        lentBookRepository.addLentBook(newLentBookEntry);
-    }
-
-    public String returnLendBook(String lendBookId){
-        LentBook returnedBook = lentBookRepository.getLentBookByLentBookId(lendBookId);
-        Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
-        book.setBookToLentOutIsFalse();
-        if (!LocalDate.now().isAfter(returnedBook.getReturnDate())){
-            return "";
-        }
-        else{ return "Your book is late.";
-        }
-
+    public List<BookDTO> findBooksBySearchTerm(String isbn) {
+        return findAllBooks().stream().filter(book -> book.getIsbn().contains(isbn)).toList();
     }
 }
