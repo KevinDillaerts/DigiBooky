@@ -17,8 +17,7 @@ class BookRepositoryTest {
     @Autowired
     private BookRepository testBookRepository;
     private BookService testBookService;
-    @Autowired
-    private UserRepository testUserRepository;
+
     @Autowired
     private LentBookRepository lentBookRepository;
     private Book book1;
@@ -33,7 +32,7 @@ class BookRepositoryTest {
                 "All about gods.", "Neill", "Gaimon");
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
-        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, testUserRepository);
+        testBookService = new BookService(mapper, testBookRepository, lentBookRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }

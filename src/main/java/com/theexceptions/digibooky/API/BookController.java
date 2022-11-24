@@ -7,6 +7,7 @@ import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.repository.users.Role;
+import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.slf4j.Logger;
@@ -52,6 +53,12 @@ public class BookController {
     public BookDTO createBook(@RequestBody CreateBookDTO bookToCreate, @RequestHeader String authorization) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.createBook(bookToCreate);
+    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path = "/lend", consumes = "application/json")
+    public void lendBook(@RequestHeader String authorization, @RequestBody String isbn) {
+        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
+        bookservice.createLendBook(isbn, user.getId());
     }
 
     @ExceptionHandler(BookNotFoundException.class)
