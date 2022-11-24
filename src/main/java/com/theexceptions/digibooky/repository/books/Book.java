@@ -71,6 +71,10 @@ public class Book {
         isLentOut = true;
     }
 
+    public void setBookToLentOutIsFalse(){
+        isLentOut = false;
+    }
+
     public String validateField(String field) {
        if (field == null || field.isEmpty()) {
            throw new FieldIsEmptyException("This field is required");

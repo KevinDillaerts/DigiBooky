@@ -8,6 +8,7 @@ import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -52,10 +53,22 @@ public class BookService {
         return bookMapper.toDTO(bookToAdd);
     }
 
-    public void createLendBook(String lendBookId, String userId){
-        Book lentBook = bookRepository.findByISBN(lendBookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
+    public void createLendBook(String isbn, String userId){
+        Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
-        LentBook newLentBookEntry = new LentBook(lendBookId, userId);
+        LentBook newLentBookEntry = new LentBook(isbn, userId);
         lentBookRepository.addLentBook(newLentBookEntry);
+    }
+
+    public String returnLendBook(String lendBookId){
+        LentBook returnedBook = lentBookRepository.getLentBookByLentBookId(lendBookId);
+        Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
+        book.setBookToLentOutIsFalse();
+        if (!LocalDate.now().isAfter(returnedBook.getReturnDate())){
+            return "";
+        }
+        else{ return "Your book is late.";
+        }
+
     }
 }
