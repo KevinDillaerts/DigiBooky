@@ -47,7 +47,6 @@ public class BookService {
     public void createLendBook(String isbn, String id){
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
-        User userLendingBook = userRepository.getUsers().get(id);
-
+        //new lent book
     }
 }

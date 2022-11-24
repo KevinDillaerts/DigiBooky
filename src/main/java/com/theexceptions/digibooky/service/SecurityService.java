@@ -21,7 +21,7 @@ public class SecurityService {
         this.userRepository = userRepository;
     }
 
-    public void validateAuthorization(String authorization, Role securityRole) {
+    public User validateAuthorization(String authorization, Role securityRole) {
         EmailPassword usernamePassword = getUsernamePassword(authorization);
         User user = userRepository.getUser(usernamePassword.email()).orElseThrow(() -> new UserNotFoundException("User not found"));
         if (!user.doesPasswordMatch(usernamePassword.password())) {
@@ -30,7 +30,7 @@ public class SecurityService {
         if (!user.getRole().equals(securityRole)) {
             throw new UnauthorizatedException("You are not authorized to access this information");
         }
-
+        return user;
     }
 
     private EmailPassword getUsernamePassword(String authorization) {
