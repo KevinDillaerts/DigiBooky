@@ -10,13 +10,13 @@ public class BookDTO {
     private String authorLastName;
     private boolean isLentOut;
 
-    public BookDTO(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName) {
+    public BookDTO(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName, boolean isLentOut) {
         this.isbn = isbn;
         this.title = title;
         this.smallSummary = smallSummary;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
-        isLentOut = false;
+        this.isLentOut = isLentOut;
     }
 
     public String getIsbn() {
@@ -39,7 +39,7 @@ public class BookDTO {
         return authorLastName;
     }
 
-    public boolean isLentOut() {
+    public boolean getIsLentOut() {
         return isLentOut;
     }
 

@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
+import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
@@ -63,6 +64,12 @@ public class BookController {
     protected void bookAlreadyExists (BookAlreadyExistsException ex, HttpServletResponse response) throws IOException {
         logger.info("Book already exists.");
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizatedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
 
 
