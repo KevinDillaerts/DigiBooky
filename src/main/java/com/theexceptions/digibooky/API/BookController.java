@@ -54,6 +54,7 @@ public class BookController {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.createBook(bookToCreate);
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/lend", consumes = "application/json")
     public void lendBook(@RequestHeader String authorization, @RequestBody String isbn) {
@@ -61,15 +62,9 @@ public class BookController {
         bookservice.createLendBook(isbn, user.getId());
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
+    @ExceptionHandler({BookNotFoundException.class, BookAlreadyExistsException.class})
     protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book not found.");
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(BookAlreadyExistsException.class)
-    protected void bookAlreadyExists (BookAlreadyExistsException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book already exists.");
+        logger.info(ex.getMessage());
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
@@ -78,7 +73,4 @@ public class BookController {
     protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
-
-
-
 }
