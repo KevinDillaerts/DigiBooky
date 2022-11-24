@@ -1,5 +1,7 @@
 package com.theexceptions.digibooky.repository.books;
 
+import com.theexceptions.digibooky.exceptions.BookAlreadyLentOutException;
+
 public class Book {
     private final String isbn;
     private String title;
@@ -58,6 +60,12 @@ public class Book {
         this.authorLastName = authorLastName;
     }
 
+    public void setBookToLentOutIsTrue(){
+        if(isLentOut){
+            throw new BookAlreadyLentOutException("Book already lent out.");
+        }
+        isLentOut = true;
+    }
 
 
 }

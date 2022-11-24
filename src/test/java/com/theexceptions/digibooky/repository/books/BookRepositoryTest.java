@@ -1,6 +1,7 @@
 package com.theexceptions.digibooky.repository.books;
 
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
+import com.theexceptions.digibooky.repository.users.UserRepository;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.junit.jupiter.api.Assertions;
@@ -8,16 +9,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BookRepositoryTest {
     @Autowired
     private BookRepository testBookRepository;
     private BookService testBookService;
+    @Autowired
+    private UserRepository testUserRepository;
+    @Autowired
+    private LentBookRepository lentBookRepository;
     private Book book1;
     private Book book2;
     private BookMapper mapper;
@@ -30,7 +31,7 @@ class BookRepositoryTest {
                 "All about gods.", "Neill", "Gaimon");
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
-        testBookService = new BookService(mapper, testBookRepository);
+        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, testUserRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }
