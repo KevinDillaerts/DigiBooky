@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public class LentBook {
-    private String lentBookId;
+    private final String lentBookId;
     private final String isbn;
     private final String userId;
     private final LocalDate returnDate;

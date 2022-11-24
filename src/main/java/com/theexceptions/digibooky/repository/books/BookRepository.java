@@ -13,7 +13,7 @@ public class BookRepository {
 
     public BookRepository() {
       books = new HashMap<>();
-      books.put("1", new Book("1", "title", "summary", "Jonas", "Nata"));
+      books.put("1", new Book("2222", "title", "summary", "Jonas", "Nata"));
     }
 
 
@@ -32,10 +32,5 @@ public class BookRepository {
     public void addBook(Book book) {
         books.put(book.getIsbn(), book);
     }
-
-
-
-
-
 
 }
