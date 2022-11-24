@@ -12,12 +12,8 @@ public class BookRepository {
     private final Map<String, Book> books;
 
     public BookRepository() {
-      books = new HashMap<>();
-      books.put("1", new Book("2222", "title", "summary", "Jonas", "Nata"));
+        books = new HashMap<>();
     }
-
-
-
 
 
     public Optional<Book> findByISBN(String isbn) {
@@ -32,5 +28,6 @@ public class BookRepository {
     public void addBook(Book book) {
         books.put(book.getIsbn(), book);
     }
+
 
 }
