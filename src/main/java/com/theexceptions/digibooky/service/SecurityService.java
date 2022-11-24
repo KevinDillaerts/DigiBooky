@@ -15,7 +15,7 @@ import java.util.Base64;
 @Service
 public class SecurityService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public SecurityService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -24,11 +24,11 @@ public class SecurityService {
     public void validateAuthorization(String authorization, Role securityRole) {
         EmailPassword usernamePassword = getUsernamePassword(authorization);
         User user = userRepository.getUser(usernamePassword.getEmail()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        if(!user.doesPasswordMatch(usernamePassword.getPassword())) {
+        if (!user.doesPasswordMatch(usernamePassword.getPassword())) {
             throw new WrongPasswordException();
         }
-        if(!user.getRole().equals(securityRole)) {
-            throw new UnauthorizatedException();
+        if (!user.getRole().equals(securityRole)) {
+            throw new UnauthorizatedException("YOu are not authorized to access this information");
         }
 
     }

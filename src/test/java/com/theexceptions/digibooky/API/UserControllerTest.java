@@ -51,7 +51,7 @@ class UserControllerTest {
         List<UserDTO> users =
                 RestAssured
                         .given()
-                        .auth().basic("admin@digibooky.com", "admin")
+                        .auth().preemptive().basic("admin@digibooky.com", "admin")
                         .accept(JSON)
                         .when()
                         .port(port)
@@ -68,7 +68,7 @@ class UserControllerTest {
     void givenMember_whenViewingAllUsers_thenErrorThrown() {
         RestAssured
                 .given()
-                .auth().basic("kevin@kevin.be", "kevin")
+                .auth().preemptive().basic("kevin@kevin.be", "kevin")
                 .accept(JSON)
                 .when()
                 .port(port)

@@ -1,6 +1,5 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
@@ -29,7 +28,7 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody CreateMemberDTO createMemberDTO) {
-      return userService.createNewMember(createMemberDTO);
+        return userService.createNewMember(createMemberDTO);
     }
 
     @GetMapping()
@@ -40,8 +39,7 @@ public class UserController {
     }
 
     @ExceptionHandler(UnauthorizatedException.class)
-    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book not found.");
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+    protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     }
 }
