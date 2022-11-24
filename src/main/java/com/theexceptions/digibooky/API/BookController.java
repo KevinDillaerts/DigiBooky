@@ -4,8 +4,8 @@ import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.service.books.BookService;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
