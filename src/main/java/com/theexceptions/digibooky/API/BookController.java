@@ -1,20 +1,13 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.exceptions.UnauthorizedException;
-import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.*;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.books.BookService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +15,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(path = "/books")
 public class BookController {
-
-    Logger logger = LoggerFactory.getLogger(BookController.class);
     private final BookService bookservice;
     private final SecurityService securityService;
 
@@ -87,9 +78,10 @@ public class BookController {
     @GetMapping(path = "/overdues")
     @ResponseStatus(HttpStatus.OK)
     public List<LentBookDTO> getOverDueBooks(@RequestHeader String authorization) {
-        securityService.validateAuthorization(authorization,Role.LIBRARIAN);
+        securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.getOverdues();
     }
+
     @DeleteMapping(path = "/{isbn}")
     @ResponseStatus(HttpStatus.OK)
     public void archiveBook(@RequestHeader String authorization, @PathVariable String isbn) {
@@ -102,18 +94,5 @@ public class BookController {
     public BookDTO restoreBook(@RequestHeader String authorization, @RequestBody RestoreBookDTO bookToRestore) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.restoreBook(bookToRestore.isbn());
-    }
-
-
-    @ExceptionHandler({BookNotFoundException.class, UserNotFoundException.class})
-    protected void bookNotFoundException(RuntimeException ex, HttpServletResponse response) throws IOException {
-        logger.warn(ex.getMessage());
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    protected void UnauthorizedException(UnauthorizedException ex, HttpServletResponse response) throws IOException {
-        logger.warn(ex.getMessage());
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     }
 }

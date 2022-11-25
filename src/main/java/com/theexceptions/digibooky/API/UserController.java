@@ -45,10 +45,4 @@ public class UserController {
         securityService.validateAuthorization(authorization, Role.ADMIN);
         return userService.getAllUsers();
     }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected void unAuthorizedException(UnauthorizedException ex, HttpServletResponse response) throws IOException {
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
-    }
 }
