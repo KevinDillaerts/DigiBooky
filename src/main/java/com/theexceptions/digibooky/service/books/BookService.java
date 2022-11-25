@@ -3,18 +3,21 @@ package com.theexceptions.digibooky.service.books;
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
+import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
 import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
+import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 
@@ -95,4 +98,11 @@ public class BookService {
             default -> throw new InvalidFilterValueException("The provided filter is not valid");
         };
     }
+
+    public List<LentBookDTO> librarianRequestListOfLentBooksPerMember(String userId){
+            return bookMapper.toLentBookDTOList((lentBookRepository.findLentBookByUserId(userId).orElseThrow(() -> new UserNotFoundException("User did not rent out any books."))));
+
+    }
+
+
 }

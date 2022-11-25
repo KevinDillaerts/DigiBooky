@@ -4,6 +4,9 @@ import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Repository
 public class LentBookRepository {
 
@@ -27,6 +30,11 @@ public class LentBookRepository {
 
     public void deleteReturnedBook(String lentBookId){
         lentBooks.removeIf(lentBook -> lentBook.getLentBookId().equals(lentBookId));
+    }
+
+    public Optional<List<LentBook>> findLentBookByUserId(String userId){
+        return Optional.of(lentBooks.stream()
+                .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList()));
     }
 
 }
