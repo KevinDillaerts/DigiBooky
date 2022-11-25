@@ -1,7 +1,8 @@
 package com.theexceptions.digibooky.API;
 
+import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
 import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
@@ -66,9 +67,9 @@ public class BookController {
         bookservice.createLendBook(lendBookIdDTO.id(), user.getId());
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book not found.");
+    @ExceptionHandler({BookNotFoundException.class, BookAlreadyExistsException.class, InvalidFilterValueException.class})
+    protected void bookException(RuntimeException ex, HttpServletResponse response) throws IOException {
+        logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
