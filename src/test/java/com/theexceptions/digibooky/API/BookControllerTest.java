@@ -2,13 +2,12 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
+import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
+import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
-import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
-import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.*;
 import com.theexceptions.digibooky.service.books.BookMapper;
-import com.theexceptions.digibooky.service.books.BookService;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import static io.restassured.http.ContentType.JSON;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BookControllerTest {
@@ -31,6 +29,8 @@ public class BookControllerTest {
     private UserRepository userRepository;
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private LentBookRepository lentBookRepository;
 
     //OK
     @Test
@@ -68,17 +68,17 @@ public class BookControllerTest {
         CreateBookDTO bookToCreate = new CreateBookDTO("123", "title", "summary", "Jonas", "Nata");
 
         RestAssured
-                        .given()
-                        .auth().preemptive().basic("test@testweer.be", "test")
-                        .contentType(JSON)
-                        .body(bookToCreate)
-                        .accept(JSON)
-                        .when()
-                        .port(port)
-                        .post("/books")
-                        .then()
-                        .assertThat()
-                        .statusCode(HttpStatus.SC_FORBIDDEN);
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .contentType(JSON)
+                .body(bookToCreate)
+                .accept(JSON)
+                .when()
+                .port(port)
+                .post("/books")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     @Test
@@ -143,16 +143,44 @@ public class BookControllerTest {
         bookRepository.addBook(book2);
         BookMapper mapper = new BookMapper();
 
-                RestAssured
-                        .given()
-                        .accept(JSON)
-                        .when()
-                        .port(port)
-                        .get("/books?wrongParam=456")
-                        .then()
-                        .assertThat()
-                        .statusCode(HttpStatus.SC_BAD_REQUEST);
+        RestAssured
+                .given()
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("/books?wrongParam=456")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
+    @Test
+    void givenMember_whenMemberLendsBook_BookIsInLentList() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
 
+        LendBookIdDTO lendBookIdDTO = new LendBookIdDTO("123456");
+
+        RestAssured
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .contentType(JSON)
+                .accept(JSON)
+                .when()
+                .port(port)
+                .body(lendBookIdDTO)
+                .post("books/lend")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_CREATED);
+
+        assertThat(lentBookRepository.getAllLendBooks()).anyMatch(lentBook -> lentBook.getIsbn().equals("123456"));
+    }
 }
