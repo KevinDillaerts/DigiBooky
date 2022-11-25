@@ -1,10 +1,13 @@
 package com.theexceptions.digibooky.API;
 
+import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
 import com.theexceptions.digibooky.repository.users.Role;
+import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.slf4j.Logger;
@@ -58,10 +61,16 @@ public class BookController {
         return bookservice.createBook(bookToCreate);
     }
 
-    @ExceptionHandler(UnauthorizatedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
-        logger.info(ex.getMessage());
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
+    @PostMapping(path = "/lend", consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void lendBook(@RequestHeader String authorization, @RequestBody LendBookIdDTO lendBookIdDTO) {
+        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
+        bookservice.createLendBook(lendBookIdDTO.id(), user.getId());
+    }
+
+    @ExceptionHandler(BookNotFoundException.class)
+    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
+        logger.info("Book not found.");
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 }
