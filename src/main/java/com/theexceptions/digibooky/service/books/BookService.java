@@ -1,10 +1,7 @@
 package com.theexceptions.digibooky.service.books;
 
 import com.theexceptions.digibooky.exceptions.*;
-import com.theexceptions.digibooky.repository.books.Book;
-import com.theexceptions.digibooky.repository.books.BookRepository;
-import com.theexceptions.digibooky.repository.books.LentBook;
-import com.theexceptions.digibooky.repository.books.LentBookRepository;
+import com.theexceptions.digibooky.repository.books.*;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
@@ -23,11 +20,14 @@ public class BookService {
     private final BookRepository bookRepository;
     private final LentBookRepository lentBookRepository;
 
+    private final BookArchiveRepository bookArchiveRepository;
 
-    public BookService(BookMapper bookMapper, BookRepository bookRepository, LentBookRepository lentBookRepository) {
+
+    public BookService(BookMapper bookMapper, BookRepository bookRepository, LentBookRepository lentBookRepository, BookArchiveRepository bookArchiveRepository) {
         this.bookMapper = bookMapper;
         this.bookRepository = bookRepository;
         this.lentBookRepository = lentBookRepository;
+        this.bookArchiveRepository = bookArchiveRepository;
     }
 
     public List<BookDTO> findAllBooks() {
@@ -104,5 +104,21 @@ public class BookService {
         } else {
             return listRentals;
         }
+    }
+
+    public void archiveBook(String isbn) {
+        Book book = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found"));
+        if (book.isLentOut()) {
+            throw new BookAlreadyLentOutException("Book is lent out, can't archive");
+        }
+        bookRepository.deleteBookByISBN(isbn);
+        bookArchiveRepository.addBook(book);
+    }
+
+    public BookDTO restoreBook(String isbn) {
+        Book book = bookArchiveRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book is not in archive"));
+        bookRepository.addBook(book);
+        bookArchiveRepository.deleteBookByISBN(isbn);
+        return bookMapper.toDTO(book);
     }
 }

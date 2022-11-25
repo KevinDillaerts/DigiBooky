@@ -1,12 +1,10 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.repository.books.Book;
-import com.theexceptions.digibooky.repository.books.BookRepository;
-import com.theexceptions.digibooky.repository.books.LentBook;
-import com.theexceptions.digibooky.repository.books.LentBookRepository;
+import com.theexceptions.digibooky.repository.books.*;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.LentBookIdDTO;
+import com.theexceptions.digibooky.repository.dtos.RestoreBookDTO;
 import com.theexceptions.digibooky.repository.users.*;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import io.restassured.RestAssured;
@@ -32,6 +30,8 @@ public class BookControllerTest {
     private BookRepository bookRepository;
     @Autowired
     private LentBookRepository lentBookRepository;
+    @Autowired
+    private BookArchiveRepository bookArchiveRepository;
 
     //OK
     @Test
@@ -242,5 +242,50 @@ public class BookControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
+    }
+
+    @Test
+    void givenALibrarianAndABook_whenArchivingBook_StatusOkIsReturnedWhenSuccesFull() {
+        User testUser = new User("test@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        userRepository.addUser(testUser);
+        bookRepository.addBook(book1);
+
+        RestAssured
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .when()
+                .port(port)
+                .delete("books/" + book1.getIsbn())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    void givenALibrarianAndAnArchivedBook_whenRestoringBook_StatusCreatedAndBookIsReturned() {
+        User testUser = new User("test@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        RestoreBookDTO bookToRestore = new RestoreBookDTO("123456");
+        userRepository.addUser(testUser);
+        bookArchiveRepository.addBook(book1);
+
+        BookDTO bookDTO =
+                RestAssured
+                        .given()
+                        .auth().preemptive().basic("test@testweer.be", "test")
+                        .contentType(JSON)
+                        .body(bookToRestore)
+                        .accept(JSON)
+                        .when()
+                        .port(port)
+                        .post("/books/restore")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.SC_CREATED)
+                        .extract()
+                        .as(BookDTO.class);
     }
 }

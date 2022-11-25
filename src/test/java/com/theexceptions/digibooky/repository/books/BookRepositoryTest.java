@@ -21,6 +21,8 @@ class BookRepositoryTest {
     private BookRepository testBookRepository;
     private BookService testBookService;
     private LentBookRepository lentBookRepository;
+
+    private BookArchiveRepository bookArchiveRepository;
     private Book book1;
     private Book book2;
     private BookMapper mapper;
@@ -34,7 +36,8 @@ class BookRepositoryTest {
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
         lentBookRepository = new LentBookRepository();
-        testBookService = new BookService(mapper, testBookRepository, lentBookRepository);
+        bookArchiveRepository = new BookArchiveRepository();
+        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, bookArchiveRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }
@@ -169,6 +172,32 @@ class BookRepositoryTest {
 
         Assertions.assertThrows(BookAlreadyLentOutException.class, () -> testBookService.createLendBook("123456", "4846464"));
     }
+
+    @Test
+    void givenABook_whenArchiving_bookIsDeletedFromBookRepoAndAddedToArchiveRepo() {
+        testBookService.archiveBook(book1.getIsbn());
+
+        Assertions.assertFalse(testBookRepository.findAllBooks().contains(book1));
+        Assertions.assertTrue(bookArchiveRepository.findAllBooks().contains(book1));
+    }
+
+    @Test
+    void givenAnArchivedBook_whenRestoring_bookIsDeletedFromArchiveRepoAndAddedToBookRepo() {
+        bookArchiveRepository.addBook(book1);
+
+        testBookService.restoreBook(book1.getIsbn());
+
+        Assertions.assertTrue(testBookRepository.findAllBooks().contains(book1));
+        Assertions.assertFalse(bookArchiveRepository.findAllBooks().contains(book1));
+    }
+
+    @Test
+    void givenALentOutBook_whenArchiving_bookAlreadyLentOutExceptionIsThrown() {
+        book1.setBookToLentOutIsTrue();
+
+        Assertions.assertThrows(BookAlreadyLentOutException.class, () -> testBookService.archiveBook(book1.getIsbn()));
+    }
+
 
 
 }

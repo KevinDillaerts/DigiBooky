@@ -79,6 +79,19 @@ public class BookController {
         return bookservice.librarianRequestListOfLentBooksPerMember(memberId);
     }
 
+    @DeleteMapping(path = "/{isbn}")
+    @ResponseStatus(HttpStatus.OK)
+    public void archiveBook(@RequestHeader String authorization, @PathVariable String isbn) {
+        securityService.validateAuthorization(authorization, Role.LIBRARIAN);
+        bookservice.archiveBook(isbn);
+    }
+
+    @PostMapping(path = "/restore", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookDTO restoreBook(@RequestHeader String authorization, @RequestBody RestoreBookDTO bookToRestore) {
+        securityService.validateAuthorization(authorization, Role.LIBRARIAN);
+        return bookservice.restoreBook(bookToRestore.isbn());
+    }
 
     @ExceptionHandler(BookNotFoundException.class)
     protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
@@ -91,4 +104,6 @@ public class BookController {
         logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     }
+
+
 }

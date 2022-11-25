@@ -34,5 +34,9 @@ public class BookRepository {
         books.put(book.getIsbn(), book);
     }
 
+    public void deleteBookByISBN(String isbn) {
+        books.remove(isbn);
+    }
+
 
 }
