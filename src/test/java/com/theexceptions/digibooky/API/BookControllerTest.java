@@ -142,7 +142,6 @@ public class BookControllerTest {
                 "All about gods.", "Neill", "Gaimon");
         bookRepository.addBook(book1);
         bookRepository.addBook(book2);
-        BookMapper mapper = new BookMapper();
 
         RestAssured
                 .given()
