@@ -1,11 +1,7 @@
 package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.repository.books.*;
-import com.theexceptions.digibooky.repository.dtos.BookDTO;
-import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
-import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
-import com.theexceptions.digibooky.repository.dtos.LentBookIdDTO;
-import com.theexceptions.digibooky.repository.dtos.RestoreBookDTO;
+import com.theexceptions.digibooky.repository.dtos.*;
 import com.theexceptions.digibooky.repository.users.*;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import io.restassured.RestAssured;
@@ -186,22 +182,22 @@ public class BookControllerTest {
 
     @Test
     void givenMemberWithLentBook_whenMemberReturnsBook_messageIsCorrect() {
-        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+        User testUser = new Member("test5@testweer.be", "test", "Kevin", "Bacon", "1235",
                 new Address("Koekoeksstraat", "70", "9090", "Melle"));
         userRepository.addUser(testUser);
-        Book book1 = new Book("123456", "The DiscWorld",
+        Book book1 = new Book("12345678", "The DiscWorld",
                 "All about wizzzzzards!", "Terry", "Pratchett");
         Book book2 = new Book("289456", "Good Omens",
                 "All about gods.", "Neill", "Gaimon");
         bookRepository.addBook(book1);
         bookRepository.addBook(book2);
 
-        LentBook lentBook = new LentBook("123456", testUser.getId());
+        LentBook lentBook = new LentBook("12345678", testUser.getId());
         lentBookRepository.addLentBook(lentBook);
 
         String message = RestAssured
                 .given()
-                .auth().preemptive().basic("test@testweer.be", "test")
+                .auth().preemptive().basic("test5@testweer.be", "test")
                 .accept(JSON)
                 .when()
                 .port(port)
@@ -212,7 +208,7 @@ public class BookControllerTest {
                 .extract()
                 .response().asString();
 
-        assertThat(lentBookRepository.getAllLendBooks()).noneMatch(book -> book.getIsbn().equals("123456"));
+        assertThat(lentBookRepository.getAllLendBooks()).noneMatch(book -> book.getIsbn().equals("12345678"));
         assertThat(message.equals("Thank you for returning your book.")).isTrue();
     }
 
@@ -240,12 +236,12 @@ public class BookControllerTest {
                 .get("books/return/" + lentBook.getLentBookId())
                 .then()
                 .assertThat()
-                .statusCode(HttpStatus.SC_UNAUTHORIZED);
+                .statusCode(HttpStatus.SC_FORBIDDEN);
     }
 
     @Test
     void givenALibrarianAndABook_whenArchivingBook_StatusOkIsReturnedWhenSuccesFull() {
-        User testUser = new User("test@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
+        User testUser = new User("test4@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
         Book book1 = new Book("123456", "The DiscWorld",
                 "All about wizzzzzards!", "Terry", "Pratchett");
         userRepository.addUser(testUser);
@@ -253,7 +249,7 @@ public class BookControllerTest {
 
         RestAssured
                 .given()
-                .auth().preemptive().basic("test@testweer.be", "test")
+                .auth().preemptive().basic("test4@testweer.be", "test")
                 .when()
                 .port(port)
                 .delete("books/" + book1.getIsbn())
@@ -264,7 +260,7 @@ public class BookControllerTest {
 
     @Test
     void givenALibrarianAndAnArchivedBook_whenRestoringBook_StatusCreatedAndBookIsReturned() {
-        User testUser = new User("test@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
+        User testUser = new User("test2@testweer.be", "test", "Kevin", "Bacon", Role.LIBRARIAN);
         Book book1 = new Book("123456", "The DiscWorld",
                 "All about wizzzzzards!", "Terry", "Pratchett");
         RestoreBookDTO bookToRestore = new RestoreBookDTO("123456");
@@ -274,7 +270,7 @@ public class BookControllerTest {
         BookDTO bookDTO =
                 RestAssured
                         .given()
-                        .auth().preemptive().basic("test@testweer.be", "test")
+                        .auth().preemptive().basic("test2@testweer.be", "test")
                         .contentType(JSON)
                         .body(bookToRestore)
                         .accept(JSON)
