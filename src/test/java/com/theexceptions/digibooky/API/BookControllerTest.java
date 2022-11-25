@@ -6,6 +6,7 @@ import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
+import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
 import com.theexceptions.digibooky.repository.dtos.LentBookIdDTO;
 import com.theexceptions.digibooky.repository.users.*;
 import com.theexceptions.digibooky.service.books.BookMapper;
@@ -33,7 +34,6 @@ public class BookControllerTest {
     @Autowired
     private LentBookRepository lentBookRepository;
 
-    //OK
     @Test
     void createLibrarian_givenBookData_thenTheNewlyCreatedBookIsSavedAndReturned() {
         userRepository.addUser(new User("librarian@digibooky.com", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN));
@@ -242,5 +242,61 @@ public class BookControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
+    }
+
+    @Test
+    void givenLibrarianAndMemberWithLentBooks_whenRequestingList_listShowsCorrectBooks() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+
+        userRepository.addUser(new User("librarian@digibooky.com", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN));
+
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+
+        LentBook lentBook1 = new LentBook("123456", testUser.getId());
+        LentBook lentBook2 = new LentBook("289456", testUser.getId());
+        lentBookRepository.addLentBook(lentBook1);
+        lentBookRepository.addLentBook(lentBook2);
+
+        List<LentBookDTO> listOfBookLent = RestAssured
+                .given()
+                .auth().preemptive().basic("librarian@digibooky.com", "librarian")
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("books/lent/" + testUser.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().body().jsonPath().getList(".", LentBookDTO.class);
+
+        assertThat(listOfBookLent).allMatch(lentBookDTO -> lentBookDTO.getUserId().equals(testUser.getId()));
+        assertThat(listOfBookLent.size() == 2).isTrue();
+    }
+
+    @Test
+    void givenLibrarianAndMemberWithNoBooks_whenRequestingList_exceptionIsThrown() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+
+        userRepository.addUser(new User("librarian@digibooky.com", "librarian", "Kevin", "Dillaerts", Role.LIBRARIAN));
+
+        RestAssured
+                .given()
+                .auth().preemptive().basic("librarian@digibooky.com", "librarian")
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("books/lent/" + testUser.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 }
