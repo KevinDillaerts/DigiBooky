@@ -12,7 +12,12 @@ public class BookRepository {
     private final Map<String, Book> books;
 
     public BookRepository() {
+
         books = new HashMap<>();
+        books.put("1", new Book("10-10", "Hello 1", "Hello Im book 1", "Hel", "Lo"));
+        books.put("2", new Book("10-20", "Bye bYe", "I say good bye", "good", "bye"));
+        books.put("3,", new Book("10-30", "Book 3", "Book 3", "Book", "3"));
+
     }
 
 

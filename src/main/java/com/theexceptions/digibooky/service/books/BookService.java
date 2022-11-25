@@ -70,21 +70,21 @@ public class BookService {
         return bookMapper.toDTO(books);
     }
 
-    public void createLendBook(String isbn, String userId){
+    public void createLendBook(String isbn, String userId) {
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
         LentBook newLentBookEntry = new LentBook(isbn, userId);
         lentBookRepository.addLentBook(newLentBookEntry);
     }
 
-    public String returnLendBook(String lendBookId){
+    public String returnLendBook(String lendBookId) {
         LentBook returnedBook = lentBookRepository.getLentBookByLentBookId(lendBookId);
         Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
         book.setBookToLentOutIsFalse();
-        if (!LocalDate.now().isAfter(returnedBook.getReturnDate())){
+        lentBookRepository.deleteReturnedBook(lendBookId);
+        if (!LocalDate.now().isAfter(returnedBook.getReturnDate())) {
             return "Thank you for returning your book.";
         }
-        lentBookRepository.deleteReturnedBook(lendBookId);
         return "Your book is overdue.";
 
     }
@@ -99,8 +99,13 @@ public class BookService {
         };
     }
 
-    public List<LentBookDTO> librarianRequestListOfLentBooksPerMember(String userId){
-            return bookMapper.toLentBookDTOList((lentBookRepository.findLentBookByUserId(userId).orElseThrow(() -> new UserNotFoundException("User did not rent out any books."))));
+    public List<LentBookDTO> librarianRequestListOfLentBooksPerMember(String userId) {
+        List<LentBookDTO> listRentals = bookMapper.toLentBookDTOList((lentBookRepository.findLentBookByUserId(userId)));
+        if (listRentals == null || listRentals.isEmpty()) {
+            throw new UserNotFoundException("User has no books rented out.");
+        } else {
+            return listRentals;
+        }
 
     }
 

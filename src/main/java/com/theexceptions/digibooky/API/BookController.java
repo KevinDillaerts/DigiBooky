@@ -64,11 +64,11 @@ public class BookController {
     }
 
 
-    @GetMapping(path = "/return/{id}")
+    @GetMapping(path = "/return/{lentBookId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public String returnBook(@RequestHeader String authorization, @PathVariable String id) {
+    public String returnBook(@RequestHeader String authorization, @PathVariable String lentBookId) {
         securityService.validateAuthorization(authorization, Role.MEMBER);
-        return bookservice.returnLendBook(id);
+        return bookservice.returnLendBook(lentBookId);
     }
 
 

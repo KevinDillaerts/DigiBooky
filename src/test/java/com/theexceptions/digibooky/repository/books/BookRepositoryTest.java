@@ -1,6 +1,7 @@
 package com.theexceptions.digibooky.repository.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
+import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
@@ -93,5 +94,51 @@ class BookRepositoryTest {
         List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("isbn", "12")));
 
         Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByTitle_thenReturnCorrectBook() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("title", "Disc")));
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByAuthorFirstName_thenReturnCorrectBook() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("authorFirstName", "err")));
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByAuthorFirstNameAndLastName_thenReturnCorrectBook() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("authorFirstName", "err", "authorLastName", "ett")));
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByAuthorLastName_thenReturnCorrectBooks() {
+        List<BookDTO> expectedList = new ArrayList<>();
+        expectedList.add(mapper.toDTO(book1));
+        expectedList.add(mapper.toDTO(book2));
+
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("authorLastName", "A")));
+
+        Assertions.assertTrue(foundBooks.containsAll(expectedList));
+    }
+
+    @Test
+    void givenAListOfBooks_whenSearchingByWrongParam_thenReturnCorrectBooks() {
+        Assertions.assertThrows(InvalidFilterValueException.class, () -> testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("test", "456"))));
     }
 }

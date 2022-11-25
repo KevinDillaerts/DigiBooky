@@ -7,12 +7,17 @@ import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
 import com.theexceptions.digibooky.repository.users.*;
+import com.theexceptions.digibooky.service.books.BookMapper;
+import com.theexceptions.digibooky.service.books.BookService;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static io.restassured.http.ContentType.JSON;
@@ -24,6 +29,7 @@ public class BookControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private BookRepository bookRepository;
 
     //OK
@@ -74,4 +80,79 @@ public class BookControllerTest {
                         .assertThat()
                         .statusCode(HttpStatus.SC_FORBIDDEN);
     }
+
+    @Test
+    void givenListOfBooks_whenSearchingWithParams_thenTheCorrectBookIsReturned() {
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+        BookMapper mapper = new BookMapper();
+
+
+        List<BookDTO> bookDTOList =
+                RestAssured
+                        .given()
+                        .accept(JSON)
+                        .when()
+                        .port(port)
+                        .get("/books?title=disc")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.SC_OK)
+                        .extract().body().jsonPath().getList(".", BookDTO.class);
+
+        assertThat(bookDTOList).containsExactlyInAnyOrder(mapper.toDTO(book1));
+    }
+
+    @Test
+    void givenListOfBooks_whenSearchingWithParams_thenTheCorrectBooksAreReturned() {
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+        BookMapper mapper = new BookMapper();
+
+
+        List<BookDTO> bookDTOList =
+                RestAssured
+                        .given()
+                        .accept(JSON)
+                        .when()
+                        .port(port)
+                        .get("/books?isbn=456")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.SC_OK)
+                        .extract().body().jsonPath().getList(".", BookDTO.class);
+
+        assertThat(bookDTOList).containsExactlyInAnyOrder(mapper.toDTO(book1), mapper.toDTO(book2));
+    }
+
+    @Test
+    void givenListOfBooks_whenSearchingWithWrongParams_thenThrowInvalidFilterValueException() {
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+        BookMapper mapper = new BookMapper();
+
+                RestAssured
+                        .given()
+                        .accept(JSON)
+                        .when()
+                        .port(port)
+                        .get("/books?wrongParam=456")
+                        .then()
+                        .assertThat()
+                        .statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+
 }

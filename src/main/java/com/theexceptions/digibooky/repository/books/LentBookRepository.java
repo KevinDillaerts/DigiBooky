@@ -3,6 +3,7 @@ package com.theexceptions.digibooky.repository.books;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,8 +13,8 @@ public class LentBookRepository {
 
     private List<LentBook> lentBooks;
 
-    public LentBookRepository(List<LentBook> lentBooks) {
-        this.lentBooks = lentBooks;
+    public LentBookRepository() {
+        this.lentBooks = new ArrayList<>();
     }
 
     public List<LentBook> getAllLendBooks(){
@@ -32,9 +33,9 @@ public class LentBookRepository {
         lentBooks.removeIf(lentBook -> lentBook.getLentBookId().equals(lentBookId));
     }
 
-    public Optional<List<LentBook>> findLentBookByUserId(String userId){
-        return Optional.of(lentBooks.stream()
-                .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList()));
+    public List<LentBook> findLentBookByUserId(String userId){
+        return lentBooks.stream()
+                .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList());
     }
 
 }
