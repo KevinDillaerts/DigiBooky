@@ -64,8 +64,7 @@ public class BookService {
             params.put(entry.getKey(), entry.getValue().toLowerCase());
             books = books.stream().filter(getFilterPredicate(entry)).toList();
         }
-        lentBookRepository.deleteReturnedBook(lendBookId);
-        return "Your book is overdue.";
+        return bookMapper.toDTO(books);
     }
 
     public void createLendBook(String isbn, String userId){
@@ -82,7 +81,9 @@ public class BookService {
         if (!LocalDate.now().isAfter(returnedBook.getReturnDate())){
             return "Thank you for returning your book.";
         }
-        return "Hier komt iets anders";
+        lentBookRepository.deleteReturnedBook(lendBookId);
+        return "Your book is overdue.";
+
     }
 
     public Predicate<Book> getFilterPredicate(Map.Entry<String, String> entry) {
