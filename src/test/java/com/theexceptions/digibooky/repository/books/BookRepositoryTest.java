@@ -159,4 +159,16 @@ class BookRepositoryTest {
 
         Assertions.assertThrows(BookAlreadyLentOutException.class, () -> testBookService.createLendBook("123456", "4846464"));
     }
+
+    @Test
+    void givenLendedBook_whenReturning_thenExceptionIsThrown() {
+        book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        testBookRepository.addBook(book1);
+        testBookService.createLendBook("123456", "489464");
+
+        Assertions.assertThrows(BookAlreadyLentOutException.class, () -> testBookService.createLendBook("123456", "4846464"));
+    }
+
+
 }

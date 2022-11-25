@@ -78,12 +78,11 @@ public class BookService {
         LentBook returnedBook = lentBookRepository.getLentBookByLentBookId(lendBookId);
         Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
         book.setBookToLentOutIsFalse();
+        lentBookRepository.deleteReturnedBook(lendBookId);
         if (!LocalDate.now().isAfter(returnedBook.getReturnDate())) {
             return "Thank you for returning your book.";
         }
-        lentBookRepository.deleteReturnedBook(lendBookId);
         return "Your book is overdue.";
-
     }
 
     public Predicate<Book> getFilterPredicate(Map.Entry<String, String> entry) {
