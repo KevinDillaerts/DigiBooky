@@ -6,6 +6,7 @@ import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
+import com.theexceptions.digibooky.repository.users.UserRepository;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +35,8 @@ class BookRepositoryTest {
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
         lentBookRepository = new LentBookRepository();
-        testBookService = new BookService(mapper, testBookRepository, lentBookRepository);
+        UserRepository userRepository = new UserRepository();
+        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, userRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }

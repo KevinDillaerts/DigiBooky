@@ -298,4 +298,33 @@ public class BookControllerTest {
                 .assertThat()
                 .statusCode(HttpStatus.SC_BAD_REQUEST);
     }
+
+/*    @Test
+    void givenMember_whenViewingDetailsOfBook_detailsOfLentBookAreEnhanced() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        bookRepository.addBook(book1);
+
+        LentBook lentBook = new LentBook("123456", testUser.getId());
+        lentBookRepository.addLentBook(lentBook);
+
+        String message = RestAssured
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("books/123456")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .extract().response().asString();
+
+        System.out.println(message);
+        //assertThat(bookDetails.getUserName().equals("Kevin Bacon")).isTrue();
+    }*/
+
 }

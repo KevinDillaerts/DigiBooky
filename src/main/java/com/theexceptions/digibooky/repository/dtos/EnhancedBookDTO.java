@@ -1,14 +1,14 @@
 package com.theexceptions.digibooky.repository.dtos;
 
-public class EnhancedBookDTO extends BookDTO{
-    private final String userID;
+public class EnhancedBookDTO extends BookDTO {
+    private final String userName;
 
-    public EnhancedBookDTO(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName, boolean isLentOut, String userID) {
+    public EnhancedBookDTO(String isbn, String title, String smallSummary, String authorFirstName, String authorLastName, boolean isLentOut, String userName) {
         super(isbn, title, smallSummary, authorFirstName, authorLastName, isLentOut);
-        this.userID = userID;
+        this.userName = userName;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserName() {
+        return userName;
     }
 }

@@ -41,8 +41,8 @@ public class BookController {
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")
-    public BookDTO getBookByISBN(@PathVariable String isbn,@RequestHeader (required = false) String authorization) {
-        if(authorization != null){
+    public BookDTO getBookByISBN(@PathVariable String isbn, @RequestHeader(required = false) String authorization) {
+        if (authorization != null) {
             securityService.validateAuthorization(authorization, Role.MEMBER);
             return bookservice.enhancedFindBookByISBN(isbn);
         }

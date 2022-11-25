@@ -40,6 +40,10 @@ public class User {
         return role;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
     private String validateEmail(String email) {
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
