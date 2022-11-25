@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 public class Book {
     private final String isbn;
-
     private String title;
     private String smallSummary;
     private String authorFirstName;

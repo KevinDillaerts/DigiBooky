@@ -2,10 +2,11 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
-import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
+import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.books.LentBookRepository;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
+import com.theexceptions.digibooky.repository.dtos.LentBookIdDTO;
 import com.theexceptions.digibooky.repository.users.*;
 import com.theexceptions.digibooky.service.books.BookMapper;
 import io.restassured.RestAssured;
@@ -166,7 +167,7 @@ public class BookControllerTest {
         bookRepository.addBook(book1);
         bookRepository.addBook(book2);
 
-        LendBookIdDTO lendBookIdDTO = new LendBookIdDTO("123456");
+        LentBookIdDTO lendBookIdDTO = new LentBookIdDTO("123456");
 
         RestAssured
                 .given()
@@ -182,5 +183,64 @@ public class BookControllerTest {
                 .statusCode(HttpStatus.SC_CREATED);
 
         assertThat(lentBookRepository.getAllLendBooks()).anyMatch(lentBook -> lentBook.getIsbn().equals("123456"));
+    }
+
+    @Test
+    void givenMemberWithLentBook_whenMemberReturnsBook_messageIsCorrect() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+
+        LentBook lentBook = new LentBook("123456", testUser.getId());
+        lentBookRepository.addLentBook(lentBook);
+
+        String message = RestAssured
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("books/return/" + lentBook.getLentBookId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .response().asString();
+
+        assertThat(lentBookRepository.getAllLendBooks()).noneMatch(book -> book.getIsbn().equals("123456"));
+        assertThat(message.equals("Thank you for returning your book.")).isTrue();
+    }
+
+    @Test
+    void givenMemberWithLentBookNotHis_whenMemberReturnsBook_messageIsCorrect() {
+        User testUser = new Member("test@testweer.be", "test", "Kevin", "Bacon", "1235",
+                new Address("Koekoeksstraat", "70", "9090", "Melle"));
+        userRepository.addUser(testUser);
+        Book book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        Book book2 = new Book("289456", "Good Omens",
+                "All about gods.", "Neill", "Gaimon");
+        bookRepository.addBook(book1);
+        bookRepository.addBook(book2);
+
+        LentBook lentBook = new LentBook("123456", "54533");
+        lentBookRepository.addLentBook(lentBook);
+
+        RestAssured
+                .given()
+                .auth().preemptive().basic("test@testweer.be", "test")
+                .accept(JSON)
+                .when()
+                .port(port)
+                .get("books/return/" + lentBook.getLentBookId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 }

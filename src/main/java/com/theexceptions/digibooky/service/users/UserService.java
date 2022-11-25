@@ -2,7 +2,7 @@ package com.theexceptions.digibooky.service.users;
 
 import com.theexceptions.digibooky.exceptions.FieldIsEmptyException;
 import com.theexceptions.digibooky.exceptions.MemberAlreadyExistsException;
-import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.exceptions.UnauthorizedException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
@@ -44,7 +44,7 @@ public class UserService {
             throw new MemberAlreadyExistsException("This user's email or ssid already exists");
         }
         if (createModeratorDTO.role().equals(Role.MEMBER)) {
-            throw new UnauthorizatedException(("You cannot create a new member"));
+            throw new UnauthorizedException(("You cannot create a new member"));
         }
         User userToAdd = new User(createModeratorDTO.email(), createModeratorDTO.password(),
                 createModeratorDTO.firstName(), createModeratorDTO.lastName(), createModeratorDTO.role());
