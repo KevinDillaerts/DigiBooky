@@ -31,14 +31,12 @@ public class BookController {
         this.securityService = securityService;
     }
 
-//    params = {"isbn", "title", "authorFirstName", "authorLastName"}
-
     @GetMapping(produces = "application/json")
     public List<BookDTO> getAllBooks(@RequestParam(required = false) Map<String, String> params) {
         if (!params.isEmpty()) {
             return bookservice.findBooksBySearchTerms(params);
         }
-       return bookservice.findAllBooks();
+        return bookservice.findAllBooks();
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")
