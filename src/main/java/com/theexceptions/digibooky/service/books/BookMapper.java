@@ -3,6 +3,7 @@ package com.theexceptions.digibooky.service.books;
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
+import com.theexceptions.digibooky.repository.dtos.EnhancedBookDTO;
 import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
 import org.springframework.stereotype.Component;
 
@@ -28,4 +29,8 @@ public class BookMapper {
         return lentBooks.stream().map(this :: toLentBookDTO).toList();
     }
 
+    public EnhancedBookDTO toEnhancedBookDTO(Book book, String userID){
+        return new EnhancedBookDTO(book.getIsbn(), book.getTitle(),  book.getSmallSummary(), book.getAuthorFirstName(),
+                book.getAuthorLastName(), book.isLentOut(), userID);
+    }
 }

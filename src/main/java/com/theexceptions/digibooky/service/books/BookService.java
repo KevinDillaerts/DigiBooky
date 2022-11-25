@@ -105,4 +105,15 @@ public class BookService {
             return listRentals;
         }
     }
+
+    public BookDTO enhancedFindBookByISBN(String isbn) {
+        Book bookToEnhance = bookRepository.findByISBN(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found."));
+        if(!bookToEnhance.isLentOut()){
+            return bookMapper.toDTO(bookToEnhance);
+        }else {
+            String userId = lentBookRepository.findLentBookByISBN(isbn).getUserId();
+            return bookMapper.toEnhancedBookDTO(bookToEnhance, userId);
+        }
+    }
 }

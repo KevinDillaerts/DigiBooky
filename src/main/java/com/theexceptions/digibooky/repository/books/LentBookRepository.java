@@ -38,4 +38,9 @@ public class LentBookRepository {
                 .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList());
     }
 
+    public LentBook findLentBookByISBN(String isbn){
+        return lentBooks.stream().filter(lentBook -> lentBook.getIsbn().equals(isbn))
+                .findFirst().orElseThrow(() -> new BookNotFoundException("Book not found"));
+    }
+
 }
