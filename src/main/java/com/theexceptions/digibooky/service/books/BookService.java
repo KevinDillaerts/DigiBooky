@@ -64,7 +64,8 @@ public class BookService {
             params.put(entry.getKey(), entry.getValue().toLowerCase());
             books = books.stream().filter(getFilterPredicate(entry)).toList();
         }
-        return bookMapper.toDTO(books);
+        lentBookRepository.deleteReturnedBook(lendBookId);
+        return "Your book is overdue.";
     }
 
     public void createLendBook(String isbn, String userId){
@@ -79,7 +80,7 @@ public class BookService {
         Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
         book.setBookToLentOutIsFalse();
         if (!LocalDate.now().isAfter(returnedBook.getReturnDate())){
-            return "";
+            return "Thank you for returning your book.";
         }
         return "Hier komt iets anders";
     }
@@ -92,12 +93,5 @@ public class BookService {
             case "authorLastName" -> book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue());
             default -> throw new InvalidFilterValueException("The provided filter is not valid");
         };
-    }
-
-    public void createLendBook(String lendBookId, String userId){
-        Book lentBook = bookRepository.findByISBN(lendBookId).orElseThrow(() -> new BookNotFoundException("Book not found."));
-        lentBook.setBookToLentOutIsTrue();
-        LentBook newLentBookEntry = new LentBook(lendBookId, userId);
-        lentBookRepository.addLentBook(newLentBookEntry);
     }
 }

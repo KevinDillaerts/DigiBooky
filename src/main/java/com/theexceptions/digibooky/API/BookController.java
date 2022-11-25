@@ -62,4 +62,11 @@ public class BookController {
         logger.info(ex.getMessage());
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
+
+    @GetMapping(path = "/return/{id}")
+    public String returnBook(@RequestHeader String authorization, @PathVariable String id) {
+        securityService.validateAuthorization(authorization, Role.MEMBER);
+        return bookservice.returnLendBook(id);
+    }
+
 }
