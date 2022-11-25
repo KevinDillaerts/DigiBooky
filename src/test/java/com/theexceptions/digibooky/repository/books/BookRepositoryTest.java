@@ -1,6 +1,7 @@
 package com.theexceptions.digibooky.repository.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
+import com.theexceptions.digibooky.exceptions.BookAlreadyLentOutException;
 import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
 import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
@@ -10,7 +11,6 @@ import com.theexceptions.digibooky.service.books.BookService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 class BookRepositoryTest {
-    @Autowired
     private BookRepository testBookRepository;
     private BookService testBookService;
-
-    @Autowired
     private LentBookRepository lentBookRepository;
     private Book book1;
     private Book book2;
@@ -36,6 +33,7 @@ class BookRepositoryTest {
                 "All about gods.", "Neill", "Gaimon");
         mapper = new BookMapper();
         testBookRepository = new BookRepository();
+        lentBookRepository = new LentBookRepository();
         testBookService = new BookService(mapper, testBookRepository, lentBookRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
@@ -140,5 +138,25 @@ class BookRepositoryTest {
     @Test
     void givenAListOfBooks_whenSearchingByWrongParam_thenReturnCorrectBooks() {
         Assertions.assertThrows(InvalidFilterValueException.class, () -> testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("test", "456"))));
+    }
+
+    @Test
+    void givenBookToLend_whenBookNotLentOut_thenBookIsInList() {
+        book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        testBookRepository.addBook(book1);
+        testBookService.createLendBook("123456", "489464");
+
+        Assertions.assertTrue(lentBookRepository.getAllLendBooks().stream().anyMatch(lentBook -> lentBook.getIsbn().equals(book1.getIsbn())));
+    }
+
+    @Test
+    void givenBookToLend_whenBookAlreadyLentOut_thenExceptionIsThrown() {
+        book1 = new Book("123456", "The DiscWorld",
+                "All about wizzzzzards!", "Terry", "Pratchett");
+        testBookRepository.addBook(book1);
+        testBookService.createLendBook("123456", "489464");
+
+        Assertions.assertThrows(BookAlreadyLentOutException.class, () -> testBookService.createLendBook("123456", "4846464"));
     }
 }

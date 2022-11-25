@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Repository
 public class LentBookRepository {
 
-    private List<LentBook> lentBooks;
+    private final List<LentBook> lentBooks;
 
     public LentBookRepository() {
         this.lentBooks = new ArrayList<>();
