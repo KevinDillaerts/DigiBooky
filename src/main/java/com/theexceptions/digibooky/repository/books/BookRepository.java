@@ -14,9 +14,9 @@ public class BookRepository {
     public BookRepository() {
 
         books = new HashMap<>();
-        books.put("1", new Book("10-10", "Hello 1", "Hello Im book 1", "Hel", "Lo"));
-        books.put("2", new Book("10-20", "Bye bYe", "I say good bye", "good", "bye"));
-        books.put("3,", new Book("10-30", "Book 3", "Book 3", "Book", "3"));
+        books.put("10-10", new Book("10-10", "Hello 1", "Hello Im book 1", "Hel", "Lo"));
+        books.put("10-20", new Book("10-20", "Bye bYe", "I say good bye", "good", "bye"));
+        books.put("10-30", new Book("10-30", "Book 3", "Book 3", "Book", "3"));
 
     }
 

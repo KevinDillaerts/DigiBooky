@@ -6,6 +6,7 @@ import com.theexceptions.digibooky.repository.dtos.BookDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
 import com.theexceptions.digibooky.repository.dtos.LentBookDTO;
 import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
+import com.theexceptions.digibooky.repository.users.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,15 +20,17 @@ public class BookService {
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
     private final LentBookRepository lentBookRepository;
+    private final UserRepository userRepository;
 
     private final BookArchiveRepository bookArchiveRepository;
 
 
-    public BookService(BookMapper bookMapper, BookRepository bookRepository, LentBookRepository lentBookRepository, BookArchiveRepository bookArchiveRepository) {
+    public BookService(BookMapper bookMapper, BookRepository bookRepository, LentBookRepository lentBookRepository, BookArchiveRepository bookArchiveRepository, UserRepository userRepository) {
         this.bookMapper = bookMapper;
         this.bookRepository = bookRepository;
         this.lentBookRepository = lentBookRepository;
         this.bookArchiveRepository = bookArchiveRepository;
+        this.userRepository = userRepository;
     }
 
     public List<BookDTO> findAllBooks() {
@@ -120,5 +123,20 @@ public class BookService {
         bookRepository.addBook(book);
         bookArchiveRepository.deleteBookByISBN(isbn);
         return bookMapper.toDTO(book);
+    }
+
+    public List<LentBookDTO> getOverdues() {
+        return bookMapper.toLentBookDTOList(lentBookRepository.getOverdueLentBooks());
+    }
+
+    public BookDTO enhancedFindBookByISBN(String isbn) {
+        Book bookToEnhance = bookRepository.findByISBN(isbn)
+                .orElseThrow(() -> new BookNotFoundException("Book not found."));
+        if (!bookToEnhance.isLentOut()) {
+            return bookMapper.toDTO(bookToEnhance);
+        } else {
+            String userID = lentBookRepository.findLentBookByISBN(isbn).getUserId();
+            return bookMapper.toEnhancedBookDTO(bookToEnhance, userRepository.findUserById(userID).getFullName());
+        }
     }
 }

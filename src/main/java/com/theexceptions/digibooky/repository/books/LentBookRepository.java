@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -38,4 +37,11 @@ public class LentBookRepository {
                 .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList());
     }
 
+    public LentBook findLentBookByISBN(String isbn) {
+        return lentBooks.stream().filter(lentBook -> lentBook.getIsbn().equals(isbn))
+                .findFirst().orElseThrow(() -> new BookNotFoundException("Book not found"));
+    }
+    public List<LentBook> getOverdueLentBooks() {
+        return lentBooks.stream().filter(LentBook::isOverdue).toList();
+    }
 }

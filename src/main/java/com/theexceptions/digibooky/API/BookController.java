@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.exceptions.UnauthorizedException;
+import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.*;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
@@ -40,7 +41,11 @@ public class BookController {
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")
-    public BookDTO getBookByISBN(@PathVariable String isbn) {
+    public BookDTO getBookByISBN(@PathVariable String isbn, @RequestHeader(required = false) String authorization) {
+        if (authorization != null) {
+            securityService.validateAuthorization(authorization, Role.MEMBER);
+            return bookservice.enhancedFindBookByISBN(isbn);
+        }
         return bookservice.findBookByISBN(isbn);
     }
 
@@ -79,6 +84,12 @@ public class BookController {
         return bookservice.librarianRequestListOfLentBooksPerMember(memberId);
     }
 
+    @GetMapping(path = "/overdues")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LentBookDTO> getOverDueBooks(@RequestHeader String authorization) {
+        securityService.validateAuthorization(authorization,Role.LIBRARIAN);
+        return bookservice.getOverdues();
+    }
     @DeleteMapping(path = "/{isbn}")
     @ResponseStatus(HttpStatus.OK)
     public void archiveBook(@RequestHeader String authorization, @PathVariable String isbn) {
@@ -93,9 +104,10 @@ public class BookController {
         return bookservice.restoreBook(bookToRestore.isbn());
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book not found.");
+
+    @ExceptionHandler({BookNotFoundException.class, UserNotFoundException.class})
+    protected void bookNotFoundException(RuntimeException ex, HttpServletResponse response) throws IOException {
+        logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
@@ -104,6 +116,4 @@ public class BookController {
         logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     }
-
-
 }
