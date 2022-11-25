@@ -1,6 +1,7 @@
 package com.theexceptions.digibooky.repository.dtos;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 public class LentBookDTO {
@@ -31,5 +32,18 @@ public class LentBookDTO {
 
     public LocalDate getReturnDate() {
         return returnDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LentBookDTO that = (LentBookDTO) o;
+        return Objects.equals(lentBookId, that.lentBookId) && Objects.equals(isbn, that.isbn) && Objects.equals(userId, that.userId) && Objects.equals(returnDate, that.returnDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lentBookId, isbn, userId, returnDate);
     }
 }

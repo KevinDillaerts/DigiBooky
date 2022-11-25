@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
 import com.theexceptions.digibooky.exceptions.UnauthorizedException;
+import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.repository.dtos.*;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
@@ -80,9 +81,9 @@ public class BookController {
     }
 
 
-    @ExceptionHandler(BookNotFoundException.class)
-    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
-        logger.info("Book not found.");
+    @ExceptionHandler({BookNotFoundException.class, UserNotFoundException.class})
+    protected void bookNotFoundException(RuntimeException ex, HttpServletResponse response) throws IOException {
+        logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
