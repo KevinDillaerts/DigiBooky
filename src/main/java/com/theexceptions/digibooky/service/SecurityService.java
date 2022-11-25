@@ -1,7 +1,7 @@
 package com.theexceptions.digibooky.service;
 
 
-import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.exceptions.UnauthorizedException;
 import com.theexceptions.digibooky.exceptions.UserNotFoundException;
 import com.theexceptions.digibooky.exceptions.WrongPasswordException;
 import com.theexceptions.digibooky.repository.users.Role;
@@ -28,7 +28,7 @@ public class SecurityService {
             throw new WrongPasswordException();
         }
         if (!user.getRole().equals(securityRole)) {
-            throw new UnauthorizatedException("You are not authorized to access this information");
+            throw new UnauthorizedException("You are not authorized to access this information");
         }
         return user;
     }

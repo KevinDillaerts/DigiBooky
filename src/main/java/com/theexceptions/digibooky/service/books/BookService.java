@@ -1,9 +1,6 @@
 package com.theexceptions.digibooky.service.books;
 
-import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
-import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
-import com.theexceptions.digibooky.exceptions.UserNotFoundException;
+import com.theexceptions.digibooky.exceptions.*;
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
 import com.theexceptions.digibooky.repository.books.LentBook;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 
@@ -77,8 +73,11 @@ public class BookService {
         lentBookRepository.addLentBook(newLentBookEntry);
     }
 
-    public String returnLendBook(String lendBookId) {
+    public String returnLendBook(String lendBookId, String userId) {
         LentBook returnedBook = lentBookRepository.getLentBookByLentBookId(lendBookId);
+        if (!returnedBook.getUserId().equals(userId)) {
+            throw new UnauthorizedException("This book return is not linked to you.");
+        }
         Book book = bookRepository.findByISBN(returnedBook.getIsbn()).stream().findFirst().orElseThrow(() -> new BookNotFoundException("Book is not found."));
         book.setBookToLentOutIsFalse();
         lentBookRepository.deleteReturnedBook(lendBookId);
@@ -100,13 +99,10 @@ public class BookService {
 
     public List<LentBookDTO> librarianRequestListOfLentBooksPerMember(String userId) {
         List<LentBookDTO> listRentals = bookMapper.toLentBookDTOList((lentBookRepository.findLentBookByUserId(userId)));
-        if (listRentals == null || listRentals.isEmpty()) {
+        if (listRentals.isEmpty()) {
             throw new UserNotFoundException("User has no books rented out.");
         } else {
             return listRentals;
         }
-
     }
-
-
 }

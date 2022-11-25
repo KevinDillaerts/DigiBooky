@@ -1,6 +1,6 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.exceptions.UnauthorizatedException;
+import com.theexceptions.digibooky.exceptions.UnauthorizedException;
 import com.theexceptions.digibooky.repository.dtos.CreateMemberDTO;
 import com.theexceptions.digibooky.repository.dtos.CreateModeratorDTO;
 import com.theexceptions.digibooky.repository.dtos.UserDTO;
@@ -46,9 +46,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @ExceptionHandler(UnauthorizatedException.class)
+    @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected void unAuthorizedException(UnauthorizatedException ex, HttpServletResponse response) throws IOException {
+    protected void unAuthorizedException(UnauthorizedException ex, HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
     }
 }

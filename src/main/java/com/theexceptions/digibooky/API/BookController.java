@@ -1,8 +1,8 @@
 package com.theexceptions.digibooky.API;
 
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
+import com.theexceptions.digibooky.exceptions.UnauthorizedException;
 import com.theexceptions.digibooky.repository.dtos.*;
-import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
@@ -67,14 +67,14 @@ public class BookController {
     @GetMapping(path = "/return/{lentBookId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public String returnBook(@RequestHeader String authorization, @PathVariable String lentBookId) {
-        securityService.validateAuthorization(authorization, Role.MEMBER);
-        return bookservice.returnLendBook(lentBookId);
+        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
+        return bookservice.returnLendBook(lentBookId, user.getId());
     }
 
 
     @GetMapping(path = "/lent/{memberId}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<LentBookDTO> getListOfLentBooksByMemberId(@RequestHeader String authorization, @PathVariable String memberId){
+    public List<LentBookDTO> getListOfLentBooksByMemberId(@RequestHeader String authorization, @PathVariable String memberId) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.librarianRequestListOfLentBooksPerMember(memberId);
     }
@@ -86,6 +86,9 @@ public class BookController {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
-
-
+    @ExceptionHandler(UnauthorizedException.class)
+    protected void UnauthorizedException(UnauthorizedException ex, HttpServletResponse response) throws IOException {
+        logger.warn(ex.getMessage());
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+    }
 }
