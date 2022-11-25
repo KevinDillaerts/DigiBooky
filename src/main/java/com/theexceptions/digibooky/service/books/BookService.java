@@ -105,4 +105,8 @@ public class BookService {
             return listRentals;
         }
     }
+
+    public List<LentBookDTO> getOverdues() {
+        return bookMapper.toLentBookDTOList(lentBookRepository.getOverdueLentBooks());
+    }
 }

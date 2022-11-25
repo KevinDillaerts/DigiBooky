@@ -38,4 +38,7 @@ public class LentBookRepository {
                 .filter(lentBook -> lentBook.getUserId().equals(userId)).collect(Collectors.toList());
     }
 
+    public List<LentBook> getOverdueLentBooks() {
+        return lentBooks.stream().filter(LentBook::isOverdue).toList();
+    }
 }

@@ -79,6 +79,13 @@ public class BookController {
         return bookservice.librarianRequestListOfLentBooksPerMember(memberId);
     }
 
+    @GetMapping(path = "/overdues")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LentBookDTO> getOverDueBooks(@RequestHeader String authorization) {
+        securityService.validateAuthorization(authorization,Role.LIBRARIAN);
+        return bookservice.getOverdues();
+    }
+
 
     @ExceptionHandler(BookNotFoundException.class)
     protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
@@ -91,4 +98,5 @@ public class BookController {
         logger.warn(ex.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
     }
+
 }

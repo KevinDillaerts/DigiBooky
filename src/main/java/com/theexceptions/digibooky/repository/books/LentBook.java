@@ -31,4 +31,8 @@ public class LentBook {
     public LocalDate getReturnDate() {
         return returnDate;
     }
+
+    public boolean isOverdue() {
+        return LocalDate.now().isAfter(returnDate);
+    }
 }
