@@ -24,6 +24,7 @@ class BookRepositoryTest {
     private LentBookRepository lentBookRepository;
 
     private BookArchiveRepository bookArchiveRepository;
+    private UserRepository userRepository;
     private Book book1;
     private Book book2;
     private BookMapper mapper;
@@ -38,7 +39,8 @@ class BookRepositoryTest {
         testBookRepository = new BookRepository();
         lentBookRepository = new LentBookRepository();
         bookArchiveRepository = new BookArchiveRepository();
-        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, bookArchiveRepository);
+        userRepository = new UserRepository();
+        testBookService = new BookService(mapper, testBookRepository, lentBookRepository, bookArchiveRepository, userRepository);
         testBookRepository.addBook(book1);
         testBookRepository.addBook(book2);
     }
