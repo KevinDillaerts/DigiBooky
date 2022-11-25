@@ -1,12 +1,8 @@
 package com.theexceptions.digibooky.API;
 
-import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
-import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
-import com.theexceptions.digibooky.repository.books.LendBookIdDTO;
-import com.theexceptions.digibooky.repository.dtos.BookDTO;
-import com.theexceptions.digibooky.repository.dtos.CreateBookDTO;
-import com.theexceptions.digibooky.repository.dtos.UpdateBookDTO;
+import com.theexceptions.digibooky.repository.dtos.*;
+import com.theexceptions.digibooky.repository.books.LentBook;
 import com.theexceptions.digibooky.repository.users.Role;
 import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
@@ -62,21 +58,34 @@ public class BookController {
 
     @PostMapping(path = "/lend", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void lendBook(@RequestHeader String authorization, @RequestBody LendBookIdDTO lendBookIdDTO) {
+    public void lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        bookservice.createLendBook(lendBookIdDTO.id(), user.getId());
+        bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
     }
 
-    @ExceptionHandler({BookNotFoundException.class, BookAlreadyExistsException.class, InvalidFilterValueException.class})
-    protected void bookException(RuntimeException ex, HttpServletResponse response) throws IOException {
-        logger.warn(ex.getMessage());
+
+    @GetMapping(path = "/return/{lentBookId}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public String returnBook(@RequestHeader String authorization, @PathVariable String lentBookId) {
+        securityService.validateAuthorization(authorization, Role.MEMBER);
+        return bookservice.returnLendBook(lentBookId);
+    }
+
+
+    @GetMapping(path = "/lent/{memberId}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LentBookDTO> getListOfLentBooksByMemberId(@RequestHeader String authorization, @PathVariable String memberId){
+        securityService.validateAuthorization(authorization, Role.LIBRARIAN);
+        return bookservice.librarianRequestListOfLentBooksPerMember(memberId);
+    }
+
+
+    @ExceptionHandler(BookNotFoundException.class)
+    protected void bookNotFoundException(BookNotFoundException ex, HttpServletResponse response) throws IOException {
+        logger.info("Book not found.");
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
 
-    @GetMapping(path = "/return/{id}")
-    public String returnBook(@RequestHeader String authorization, @PathVariable String id) {
-        securityService.validateAuthorization(authorization, Role.MEMBER);
-        return bookservice.returnLendBook(id);
-    }
+
 
 }
