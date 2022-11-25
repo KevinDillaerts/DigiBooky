@@ -34,14 +34,12 @@ public class BookController {
         this.securityService = securityService;
     }
 
-//    params = {"isbn", "title", "authorFirstName", "authorLastName"}
-
     @GetMapping(produces = "application/json")
     public List<BookDTO> getAllBooks(@RequestParam(required = false) Map<String, String> params) {
         if (!params.isEmpty()) {
             return bookservice.findBooksBySearchTerms(params);
         }
-       return bookservice.findAllBooks();
+        return bookservice.findAllBooks();
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")
@@ -73,4 +71,11 @@ public class BookController {
         logger.info("Book not found.");
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
     }
+
+    @GetMapping(path = "/return/{id}")
+    public String returnBook(@RequestHeader String authorization, @PathVariable String id) {
+        securityService.validateAuthorization(authorization, Role.MEMBER);
+        return bookservice.returnLendBook(id);
+    }
+
 }
