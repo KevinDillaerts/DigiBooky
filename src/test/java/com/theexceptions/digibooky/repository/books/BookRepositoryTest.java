@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class BookRepositoryTest {
     @Autowired
@@ -78,7 +80,7 @@ class BookRepositoryTest {
         expectedList.add(mapper.toDTO(book1));
         expectedList.add(mapper.toDTO(book2));
 
-        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerm("456");
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("isbn", "456")));
 
         Assertions.assertTrue(foundBooks.containsAll(expectedList));
     }
@@ -88,7 +90,7 @@ class BookRepositoryTest {
         List<BookDTO> expectedList = new ArrayList<>();
         expectedList.add(mapper.toDTO(book1));
 
-        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerm("12");
+        List<BookDTO> foundBooks = testBookService.findBooksBySearchTerms(new HashMap<>(Map.of("isbn", "12")));
 
         Assertions.assertTrue(foundBooks.containsAll(expectedList));
     }

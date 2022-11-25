@@ -2,6 +2,7 @@ package com.theexceptions.digibooky.service.books;
 
 import com.theexceptions.digibooky.exceptions.BookAlreadyExistsException;
 import com.theexceptions.digibooky.exceptions.BookNotFoundException;
+import com.theexceptions.digibooky.exceptions.InvalidFilterValueException;
 import com.theexceptions.digibooky.repository.books.Book;
 import com.theexceptions.digibooky.repository.books.BookRepository;
 import com.theexceptions.digibooky.repository.books.LentBookRepository;
@@ -12,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
+import java.util.function.Predicate;
 
 
 @Service
@@ -58,23 +58,20 @@ public class BookService {
 
     public List<BookDTO> findBooksBySearchTerms(Map<String, String> params) {
         List<Book> books = bookRepository.findAllBooks();
-        for (Map.Entry<String, String> entry: params.entrySet()) {
-            books = filterBooks(entry, books);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            params.put(entry.getKey(), entry.getValue().toLowerCase());
+            books = books.stream().filter(getFilterPredicate(entry)).toList();
         }
         return bookMapper.toDTO(books);
     }
 
-    public List<Book> filterBooks(Map.Entry<String, String> entry, List<Book> books) {
+    public Predicate<Book> getFilterPredicate(Map.Entry<String, String> entry) {
         return switch (entry.getKey()) {
-            case "isbn" ->
-                    books.stream().filter(book -> book.getIsbn().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
-            case "title" ->
-                    books.stream().filter(book -> book.getTitle().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
-            case "authorFirstName" ->
-                    books.stream().filter(book -> book.getAuthorFirstName().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
-            case "authorLastName" ->
-                    books.stream().filter(book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue().toLowerCase())).collect(Collectors.toList());
-            default -> books;
+            case "isbn" -> book -> book.getIsbn().contains(entry.getValue());
+            case "title" -> book -> book.getTitle().toLowerCase().contains(entry.getValue());
+            case "authorFirstName" -> book -> book.getAuthorFirstName().toLowerCase().contains(entry.getValue());
+            case "authorLastName" -> book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue());
+            default -> throw new InvalidFilterValueException("The provided filter is not valid");
         };
     }
 }
