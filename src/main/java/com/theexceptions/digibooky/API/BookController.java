@@ -40,7 +40,7 @@ public class BookController {
     }
 
     @GetMapping(path = "{isbn}", produces = "application/json")
-    public BookDTO getBookByISBN(@PathVariable String isbn) {
+    public BookDTO getBookByISBN(@PathVariable String isbn,@RequestHeader (required = false) String authorization) {
         return bookservice.findBookByISBN(isbn);
     }
 
