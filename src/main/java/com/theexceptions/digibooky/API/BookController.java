@@ -6,6 +6,7 @@ import com.theexceptions.digibooky.repository.users.User;
 import com.theexceptions.digibooky.service.SecurityService;
 import com.theexceptions.digibooky.service.books.BookService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class BookController {
         this.securityService = securityService;
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BookDTO> getAllBooks(@RequestParam(required = false) Map<String, String> params) {
         if (!params.isEmpty()) {
             return bookservice.findBooksBySearchTerms(params);
@@ -31,7 +32,7 @@ public class BookController {
         return bookservice.findAllBooks();
     }
 
-    @GetMapping(path = "{isbn}", produces = "application/json")
+    @GetMapping(path = "{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
     public BookDTO getBookByISBN(@PathVariable String isbn, @RequestHeader(required = false) String authorization) {
         if (authorization != null) {
             securityService.validateAuthorization(authorization, Role.MEMBER);
@@ -40,35 +41,36 @@ public class BookController {
         return bookservice.findBookByISBN(isbn);
     }
 
-    @PutMapping(path = "{isbn}", consumes = "application/json", produces = "application/json")
+    @PutMapping(path = "{isbn}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     public BookDTO updateBookByISBN(@PathVariable String isbn, @RequestBody UpdateBookDTO bookToUpdate) {
         return bookservice.updateBook(isbn, bookToUpdate);
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public BookDTO createBook(@RequestBody CreateBookDTO bookToCreate, @RequestHeader String authorization) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
         return bookservice.createBook(bookToCreate);
     }
 
-    @PostMapping(path = "/lend", consumes = "application/json")
+    @PostMapping(path = "/lend", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
+    public LentBookDTO lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
+        return bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
+    }@ResponseStatus(HttpStatus.OK)
+
+
+    @PostMapping(path = "/return/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+
+    public String returnBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO bookToReturn) {
+        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
+        return bookservice.returnLendBook(bookToReturn.id(), user.getId());
     }
 
 
-    @GetMapping(path = "/return/{lentBookId}", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public String returnBook(@RequestHeader String authorization, @PathVariable String lentBookId) {
-        User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        return bookservice.returnLendBook(lentBookId, user.getId());
-    }
-
-
-    @GetMapping(path = "/lent/{memberId}", produces = "application/json")
+    @GetMapping(path = "/lent/{memberId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<LentBookDTO> getListOfLentBooksByMemberId(@RequestHeader String authorization, @PathVariable String memberId) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
@@ -89,7 +91,7 @@ public class BookController {
         bookservice.archiveBook(isbn);
     }
 
-    @PostMapping(path = "/restore", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public BookDTO restoreBook(@RequestHeader String authorization, @RequestBody RestoreBookDTO bookToRestore) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);

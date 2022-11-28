@@ -10,11 +10,11 @@ public class LentBookDTO {
     private final String userId;
     private final LocalDate returnDate;
 
-    public LentBookDTO(String isbn, String userId) {
-        this.lentBookId = UUID.randomUUID().toString();
+    public LentBookDTO(String id, String isbn, String userId, LocalDate returnDate) {
+        this.lentBookId = id;
         this.isbn = isbn;
         this.userId = userId;
-        this.returnDate = LocalDate.now().plusWeeks(3);
+        this.returnDate = returnDate;
     }
 
 

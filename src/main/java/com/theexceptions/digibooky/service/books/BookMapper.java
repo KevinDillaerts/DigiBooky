@@ -22,7 +22,7 @@ public class BookMapper {
     }
 
     public LentBookDTO toLentBookDTO(LentBook lentBook){
-        return new LentBookDTO(lentBook.getIsbn(), lentBook.getUserId());
+        return new LentBookDTO(lentBook.getLentBookId(), lentBook.getIsbn(), lentBook.getUserId(), lentBook.getReturnDate());
     }
 
     public List<LentBookDTO> toLentBookDTOList(List<LentBook> lentBooks){
@@ -33,4 +33,6 @@ public class BookMapper {
         return new EnhancedBookDTO(book.getIsbn(), book.getTitle(),  book.getSmallSummary(), book.getAuthorFirstName(),
                 book.getAuthorLastName(), book.isLentOut(), userID);
     }
+
+
 }
