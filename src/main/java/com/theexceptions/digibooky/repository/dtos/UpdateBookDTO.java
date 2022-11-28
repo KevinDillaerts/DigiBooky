@@ -1,7 +1,5 @@
 package com.theexceptions.digibooky.repository.dtos;
 
-import java.util.Objects;
-
 public class UpdateBookDTO {
     private String title;
     private String smallSummary;
