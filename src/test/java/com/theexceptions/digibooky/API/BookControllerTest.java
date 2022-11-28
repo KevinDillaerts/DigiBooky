@@ -194,14 +194,17 @@ public class BookControllerTest {
 
         LentBook lentBook = new LentBook("12345678", testUser.getId());
         lentBookRepository.addLentBook(lentBook);
+        LentBookIdDTO lentBookIdDTO = new LentBookIdDTO(lentBook.getLentBookId());
 
         String message = RestAssured
                 .given()
                 .auth().preemptive().basic("test5@testweer.be", "test")
+                .contentType(JSON)
                 .accept(JSON)
                 .when()
                 .port(port)
-                .get("books/return/" + lentBook.getLentBookId())
+                .body(lentBookIdDTO)
+                .delete("books/return/")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
@@ -226,14 +229,17 @@ public class BookControllerTest {
 
         LentBook lentBook = new LentBook("123456", "54533");
         lentBookRepository.addLentBook(lentBook);
+        LentBookIdDTO lentBookIdDTO = new LentBookIdDTO(lentBook.getLentBookId());
 
         RestAssured
                 .given()
                 .auth().preemptive().basic("test@testweer.be", "test")
+                .contentType(JSON)
                 .accept(JSON)
                 .when()
                 .port(port)
-                .get("books/return/" + lentBook.getLentBookId())
+                .body(lentBookIdDTO)
+                .delete("books/return/")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_FORBIDDEN);
