@@ -1,0 +1,692 @@
+{
+	"info": {
+		"_postman_id": "a62ea249-edab-4c17-b0dc-07c389d6df95",
+		"name": "DigiBooky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18626847"
+	},
+	"item": [
+		{
+			"name": "Add new Member",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"kevin@kevin.be\",\r\n    \"password\": \"ditismijncoolpaswoord\",\r\n    \"firstName\": \"Kevin\",\r\n    \"lastName\": \"Dillaerts\",\r\n    \"ssid\": \"564864sdf\",\r\n    \"address\": {\r\n        \"streetName\": \"Albertvest\",\r\n        \"houseNumber\": \"6\",\r\n        \"postalCode\": \"3300\",\r\n        \"city\": \"Tienen\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new Librarian",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin@digibooky.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@testing.be\",\r\n    \"password\": \"iamalibrarian\",\r\n    \"firstName\": \"The\",\r\n    \"lastName\": \"Librarian\",\r\n    \"role\": \"LIBRARIAN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new book",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"12121\",\r\n \"title\": \"Lord of the Rings\",\r\n \"smallSummary\":\"You have my axe!\",\r\n \"authorFirstName\": \"JRR\",\r\n \"authorLastName\" : \"Tolkien\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new book 2",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"4856151\",\r\n \"title\": \"Lord of the Flies\",\r\n \"smallSummary\":\"The book begins with the boys' arrival on the island after their plane has been shot down during what seems to be part of a nuclear World War III.[11] Some of the marooned characters are ordinary students, while others arrive as a musical choir under an established leader. With the exception of Sam, Eric, and the choirboys, they appear never to have encountered each other before. The book portrays their descent into savagery; left to themselves on a paradisiacal island, far from modern civilisation, the well-educated boys regress to a primitive state.\",\r\n \"authorFirstName\": \"William\",\r\n \"authorLastName\" : \"Golding\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new book 3",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"4545484\",\r\n \"title\": \"Sapiens\",\r\n \"smallSummary\":\"Harari's work situates its account of human history within a framework: he sees the natural sciences as setting the limits of possibility for human activity and sees the social sciences as shaping what happens within those bounds. The academic discipline of history is the account of cultural change.\",\r\n \"authorFirstName\": \"Yuval\",\r\n \"authorLastName\" : \"Harari\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new book 4",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"4561548\",\r\n \"title\": \"The Jungle Book\",\r\n \"smallSummary\":\"Mowgli, a young orphan boy, is found in a basket in the deep jungles of India by Bagheera, a black panther who promptly takes him to Raksha, a mother wolf who has just had cubs. She and her mate, Rama, raise him along with their own cubs and after ten years, Mowgli becomes well acquainted with jungle life and plays with his wolf siblings. Bagheera is pleased with how happy Mowgli is now, but also worries that Mowgli must eventually return to his own kind.\",\r\n \"authorFirstName\": \"Rudyard\",\r\n \"authorLastName\" : \"Kipling\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lend new book as member",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "ditismijncoolpaswoord",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "kevin@kevin.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": \"12121\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/lend",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"lend"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Restore a book",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\" : \"12121\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/restore",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"restore"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a book",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"isbn\": \"12121\",\r\n \"title\": \"Lord of the Rings\",\r\n \"smallSummary\":\"You have my axe! And my sword!\",\r\n \"authorFirstName\": \"JRR\",\r\n \"authorLastName\" : \"Tolkien\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/12121",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"12121"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "See list of books lent by member",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books/lent/4137f5d2-9560-413a-ae80-cc6960bcd19c",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"lent",
+						"4137f5d2-9560-413a-ae80-cc6960bcd19c"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "See details of book",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books/12121",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"12121"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "See enhanced details as member",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "ditismijncoolpaswoord",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "kevin@kevin.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books/12121",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"12121"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search by by part of isbn",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books?isbn=121",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "isbn",
+							"value": "121"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search book by part of author first name and author last name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books?authorFirstName=yu&authorLastName=har",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "authorFirstName",
+							"value": "yu"
+						},
+						{
+							"key": "authorLastName",
+							"value": "har"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search book by part of title and author last name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books?title=lord&authorLastName=tol",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "lord"
+						},
+						{
+							"key": "authorLastName",
+							"value": "tol"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View users as admin",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin@digibooky.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Return a book",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "ditismijncoolpaswoord",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "kevin@kevin.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": \"66235139-4357-4347-9122-154814a81062\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/books/return",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"return"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a book",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "iamalibrarian",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test@testing.be",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/books/12121",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"12121"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
