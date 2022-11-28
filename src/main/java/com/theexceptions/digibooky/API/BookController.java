@@ -88,9 +88,9 @@ public class BookController {
 
     @DeleteMapping(path = "/{isbn}")
     @ResponseStatus(HttpStatus.OK)
-    public void archiveBook(@RequestHeader String authorization, @PathVariable String isbn) {
+    public String archiveBook(@RequestHeader String authorization, @PathVariable String isbn) {
         securityService.validateAuthorization(authorization, Role.LIBRARIAN);
-        bookservice.archiveBook(isbn);
+        return bookservice.archiveBook(isbn);
     }
 
     @PostMapping(path = "/restore", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

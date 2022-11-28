@@ -111,13 +111,14 @@ public class BookService {
         }
     }
 
-    public void archiveBook(String isbn) {
+    public String archiveBook(String isbn) {
         Book book = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found"));
         if (book.isLentOut()) {
             throw new BookAlreadyLentOutException("Book is lent out, can't archive");
         }
         bookRepository.deleteBookByISBN(isbn);
         bookArchiveRepository.addBook(book);
+        return "Book" + book.getIsbn() + "has been deleted";
     }
 
     public BookDTO restoreBook(String isbn) {
