@@ -69,6 +69,16 @@ public class BookService {
         return bookMapper.toDTO(books);
     }
 
+    public Predicate<Book> getFilterPredicate(Map.Entry<String, String> entry) {
+        return switch (entry.getKey()) {
+            case "isbn" -> book -> book.getIsbn().toLowerCase().contains(entry.getValue());
+            case "title" -> book -> book.getTitle().toLowerCase().contains(entry.getValue());
+            case "authorFirstName" -> book -> book.getAuthorFirstName().toLowerCase().contains(entry.getValue());
+            case "authorLastName" -> book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue());
+            default -> throw new InvalidFilterValueException("The provided filter is not valid");
+        };
+    }
+
     public LentBookDTO createLendBook(String isbn, String userId) {
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
@@ -91,15 +101,6 @@ public class BookService {
         return "Your book is overdue.";
     }
 
-    public Predicate<Book> getFilterPredicate(Map.Entry<String, String> entry) {
-        return switch (entry.getKey()) {
-            case "isbn" -> book -> book.getIsbn().contains(entry.getValue());
-            case "title" -> book -> book.getTitle().toLowerCase().contains(entry.getValue());
-            case "authorFirstName" -> book -> book.getAuthorFirstName().toLowerCase().contains(entry.getValue());
-            case "authorLastName" -> book -> book.getAuthorLastName().toLowerCase().contains(entry.getValue());
-            default -> throw new InvalidFilterValueException("The provided filter is not valid");
-        };
-    }
 
     public List<LentBookDTO> librarianRequestListOfLentBooksPerMember(String userId) {
         List<LentBookDTO> listRentals = bookMapper.toLentBookDTOList((lentBookRepository.findLentBookByUserId(userId)));

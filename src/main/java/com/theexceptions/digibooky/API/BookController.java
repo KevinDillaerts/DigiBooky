@@ -64,7 +64,7 @@ public class BookController {
     }
 
 
-    @PostMapping(path = "/return/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/return", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public String returnBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO bookToReturn) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
