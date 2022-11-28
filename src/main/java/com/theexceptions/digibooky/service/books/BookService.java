@@ -118,7 +118,7 @@ public class BookService {
         }
         bookRepository.deleteBookByISBN(isbn);
         bookArchiveRepository.addBook(book);
-        return "Book" + book.getIsbn() + "has been deleted";
+        return "Book " + book.getIsbn() + " has been deleted";
     }
 
     public BookDTO restoreBook(String isbn) {
