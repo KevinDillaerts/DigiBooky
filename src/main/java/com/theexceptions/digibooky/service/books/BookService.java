@@ -69,11 +69,12 @@ public class BookService {
         return bookMapper.toDTO(books);
     }
 
-    public void createLendBook(String isbn, String userId) {
+    public LentBookDTO createLendBook(String isbn, String userId) {
         Book lentBook = bookRepository.findByISBN(isbn).orElseThrow(() -> new BookNotFoundException("Book not found."));
         lentBook.setBookToLentOutIsTrue();
         LentBook newLentBookEntry = new LentBook(isbn, userId);
         lentBookRepository.addLentBook(newLentBookEntry);
+        return bookMapper.toLentBookDTO(newLentBookEntry);
     }
 
     public String returnLendBook(String lendBookId, String userId) {

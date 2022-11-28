@@ -52,19 +52,19 @@ public class BookController {
         return bookservice.createBook(bookToCreate);
     }
 
-    @PostMapping(path = "/lend", consumes = "application/json")
+    @PostMapping(path = "/lend", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
+    public LentBookDTO lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
+        return bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
     }
 
 
-    @GetMapping(path = "/return/{lentBookId}", produces = "application/json")
+    @GetMapping(path = "/return/", produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public String returnBook(@RequestHeader String authorization, @PathVariable String lentBookId) {
+    public String returnBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO bookToReturn) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
-        return bookservice.returnLendBook(lentBookId, user.getId());
+        return bookservice.returnLendBook(bookToReturn.id(), user.getId());
     }
 
 
