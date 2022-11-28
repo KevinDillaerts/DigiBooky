@@ -25,6 +25,7 @@ public class BookController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     public List<BookDTO> getAllBooks(@RequestParam(required = false) Map<String, String> params) {
         if (!params.isEmpty()) {
             return bookservice.findBooksBySearchTerms(params);
@@ -33,6 +34,7 @@ public class BookController {
     }
 
     @GetMapping(path = "{isbn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     public BookDTO getBookByISBN(@PathVariable String isbn, @RequestHeader(required = false) String authorization) {
         if (authorization != null) {
             securityService.validateAuthorization(authorization, Role.MEMBER);
@@ -59,11 +61,11 @@ public class BookController {
     public LentBookDTO lendBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO lentBookIdDTO) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
         return bookservice.createLendBook(lentBookIdDTO.id(), user.getId());
-    }@ResponseStatus(HttpStatus.OK)
+    }
 
 
     @PostMapping(path = "/return/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-
+    @ResponseStatus(HttpStatus.OK)
     public String returnBook(@RequestHeader String authorization, @RequestBody LentBookIdDTO bookToReturn) {
         User user = securityService.validateAuthorization(authorization, Role.MEMBER);
         return bookservice.returnLendBook(bookToReturn.id(), user.getId());
